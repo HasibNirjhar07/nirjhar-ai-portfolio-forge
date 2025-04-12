@@ -29,7 +29,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
             <a href="#hero" className="text-xl font-bold text-gradient">
-              Hasibul<span className="text-ml-accent">.dev</span>
+              Nirjhar<span className="text-ml-accent">.dev</span>
             </a>
           </div>
           
@@ -52,23 +52,25 @@ const Navbar = () => {
           </div>
           
           <div className="hidden md:flex items-center space-x-4">
-            <a 
-              href="https://github.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-white hover:text-ml-primary transition-colors"
-            >
-              <Github size={20} />
-            </a>
-            <a 
-              href="https://linkedin.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-white hover:text-ml-primary transition-colors"
-            >
-              <Linkedin size={20} />
-            </a>
-          </div>
+  <a 
+    href="https://github.com/HasibNirjhar07" 
+    target="_blank" 
+    rel="noopener noreferrer"
+    aria-label="Visit Hasibul's GitHub"
+    className="text-white hover:text-ml-primary transition-colors"
+  >
+    <Github size={20} />
+  </a>
+  <a 
+    href="https://www.linkedin.com/in/hasibul-islam-nirjhar-b50925262/" 
+    target="_blank" 
+    rel="noopener noreferrer"
+    aria-label="Visit Hasibul's LinkedIn"
+    className="text-white hover:text-ml-primary transition-colors"
+  >
+    <Linkedin size={20} />
+  </a>
+</div>
           
           {/* Mobile menu button */}
           <div className="md:hidden">
