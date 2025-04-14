@@ -179,7 +179,7 @@ const Skills = () => {
   }, [isVisible]);
 
   return (
-    <section className="w-full min-h-screen bg-ml-dark flex flex-col items-center justify-center py-20 overflow-hidden">
+    <section id="skills" className="w-full min-h-screen bg-ml-dark flex flex-col items-center justify-center py-20 overflow-hidden">
       <div ref={sectionRef} className="w-full max-w-6xl mx-auto px-4">
         {/* Header text */}
         <div className={`text-center mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
