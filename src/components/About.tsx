@@ -51,8 +51,15 @@ const About = () => {
   }, []);
 
   return (
-    <section id="about" className="py-24 bg-gradient-to-b from-ml-dark/90 to-ml-dark relative overflow-hidden">
-      {/* Background elements */}
+    <section id="about" className="py-24 relative overflow-hidden">
+    {/* Background GIF */}
+    <div className="absolute inset-0 z-0">
+      <img
+        src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXlzaW5qYXl4eTA5N2l3Z2NrcnN2d3ZxZWdvbzE5ZWR3ZnV4eDliMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XGy4Gnkgl7iKoyQkdK/giphy.gif"
+        alt="Background animation"
+        className="w-full h-full object-cover opacity-40"
+      />
+    </div>
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full bg-ml-primary/10 blur-3xl animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-ml-accent/10 blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
