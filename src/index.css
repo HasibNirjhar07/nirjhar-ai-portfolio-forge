@@ -143,3 +143,30 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #8a76e4;
 }
+
+
+
+/* styles/globals.css or your CSS file */
+
+/* Hide cursor on all elements */
+* {
+  cursor: none !important;
+}
+
+.custom-cursor {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url('/images/game-cursor.png'); /* Add your game-themed cursor image */
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease;
+}
+
+.cursor-clicked {
+  transform: translate(-50%, -50%) scale(0.8);
+}
