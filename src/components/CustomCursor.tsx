@@ -15,7 +15,7 @@ const CustomCursor = (): JSX.Element => {
     document.body.style.cursor = 'none';
     
     // Add robotic click sound
-    const clickSound = new Audio('/sounds/robot-click.mp3');
+    const clickSound = new Audio('/robot-click.mp3');
     
     const updatePosition = (e: MouseEvent): void => {
       setPosition({ x: e.clientX, y: e.clientY });
