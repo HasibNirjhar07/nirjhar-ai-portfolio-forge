@@ -212,7 +212,7 @@ const Hero: React.FC = () => {
     <section 
       id="hero" 
       ref={heroRef}
-      className="min-h-screen mt-5 flex items-center justify-center relative overflow-hidden bg-ml-dark"
+      className="min-h-screen  flex items-center justify-center relative overflow-hidden bg-ml-dark"
     >
       {/* Particle Background */}
       <canvas 
@@ -241,7 +241,7 @@ const Hero: React.FC = () => {
                   opacity: 0,
                 }}
               >
-                <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm border border-white/10">
+                <div className="inline-flex items-center space-x-2 mt-4 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm border border-white/10">
                   <Brain size={18} className="text-ml-accent" />
                   <span className="text-white/80">AI & ML Enthusiast</span>
                 </div>

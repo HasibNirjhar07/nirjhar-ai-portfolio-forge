@@ -632,7 +632,7 @@ useEffect(() => {
   }
 
   return (
-    <section id="about" className="py-12 relative overflow-hidden bg-black min-h-screen game-container">
+    <section id="about" className="py-12 relative overflow-hidden bg-ml-dark min-h-screen game-container">
       {/* Game UI frame */}
       <div className="absolute inset-0 pointer-events-none z-10">
         <div className="absolute top-0 left-0 w-32 h-32 border-t-4 border-l-4 border-green-500 opacity-70"></div>
@@ -643,12 +643,12 @@ useEffect(() => {
 
       {/* Background effects */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(21,87,153,0.3)_0%,rgba(6,20,40,0.9)_70%,rgba(0,0,0,1)_100%)]"></div>
+        {/* <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(21,87,153,0.3)_0%,rgba(6,20,40,0.9)_70%,rgba(0,0,0,1)_100%)]"></div> */}
         
         {/* Grid lines */}
         <div className="absolute inset-0 grid-overlay"></div>
         
-        {/* Floating particles */}
+        {/* Floating particles
         <div className="absolute inset-0 overflow-hidden">
           {Array.from({ length: 20 }).map((_, i) => (
             <div 
@@ -662,7 +662,10 @@ useEffect(() => {
               }}
             ></div>
           ))}
-        </div>
+        </div> */}
+
+
+        
         
         {/* Glow effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
