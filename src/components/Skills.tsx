@@ -103,37 +103,40 @@ const Skills = () => {
   const [isVisible, setIsVisible] = useState(false);
   const iconRefsMap = useRef({});
 
-  // Tech stacks with fixed positioning
   const topTechIcons = [
-    // { id: 'figma', name: 'Figma', imgSrc: "/api/placeholder/40/40", alt: "Figma", style: { left: '10%' } },
-    { id: 'react', name: 'React', imgSrc: "/api/placeholder/40/40", alt: "React", style: { left: '25%' } },
-    { id: 'csharp', name: 'C#', imgSrc: "/api/placeholder/40/40", alt: "C#", style: { left: '40%' } },
-    { id: 'node', name: 'Node', imgSrc: "node-js-icon.png", alt: "Node", style: { left: '55%' } },
-    // { id: 'electron', name: 'Electron', imgSrc: "/api/placeholder/40/40", alt: "Electron", style: { left: '70%' } },
-    { id: 'js', name: 'JavaScript', imgSrc: "/api/placeholder/40/40", alt: "JavaScript", style: { left: '85%' } }
+    { id: 'react', name: 'React', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", alt: "React", style: { left: '25%' } },
+    { id: 'csharp', name: 'C#', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg", alt: "C#", style: { left: '40%' } },
+    { id: 'node', name: 'Node.js', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg", alt: "Node.js", style: { left: '55%' } },
+    { id: 'js', name: 'JavaScript', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg", alt: "JavaScript", style: { left: '85%' } }
   ];
-
+  
   const bottomTechIcons = [
-    // { id: 'xd', name: 'XD', imgSrc: "/api/placeholder/40/40", alt: "Adobe XD", style: { left: '15%' } },
-    { id: 'nextjs', name: 'Next.js', imgSrc: "nextjs-icon.png", alt: "Next.js", style: { left: '30%' } },
-    // { id: 'graphql', name: 'GraphQL', imgSrc: "/api/placeholder/40/40", alt: "GraphQL", style: { left: '45%' } },
-    { id: 'ai', name: 'AI', imgSrc: "/api/placeholder/40/40", alt: "Adobe Illustrator", style: { left: '60%' } },
-    { id: 'express', name: 'Express', imgSrc: "/api/placeholder/40/40", alt: "Express", style: { left: '75%' } }
+    { id: 'nextjs', name: 'Next.js', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", alt: "Next.js", style: { left: '30%' } },
+    {
+      id: 'tailwind',
+      name: 'Tailwind CSS',
+      imgSrc: "https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg",
+      alt: "Tailwind CSS",
+      style: { left: '45%' }
+    },
+    
+    { id: 'tensorflow', name: 'TensorFlow', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg", alt: "TensorFlow", style: { left: '60%' } },
+    { id: 'python', name: 'Python', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", alt: "Python", style: { left: '75%' } }
   ];
-
+  
   const leftTechIcons = [
-    { id: 'ai-left', name: 'AI', imgSrc: "/api/placeholder/30/30", alt: "AI", style: { top: '20%' } },
-    { id: 'linkedin', name: 'LinkedIn', imgSrc: "/api/placeholder/30/30", alt: "LinkedIn", style: { top: '40%' } },
-    // { id: 'target', name: 'Target', imgSrc: "/api/placeholder/30/30", alt: "Target", style: { top: '60%' } },
-    { id: 'html', name: 'HTML', imgSrc: "/api/placeholder/30/30", alt: "HTML", style: { top: '80%' } }
+    { id: 'java', name: 'Java', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg", alt: "Java", style: { top: '20%' } },
+    { id: 'cpp', name: 'C++', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg", alt: "C++", style: { top: '40%' } },
+    { id: 'html', name: 'HTML', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg", alt: "HTML", style: { top: '60%' } },
+    { id: 'css', name: 'CSS', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg", alt: "CSS", style: { top: '80%' } }
   ];
-
+  
   const rightTechIcons = [
-    { id: 'code', name: 'Code', imgSrc: "/api/placeholder/30/30", alt: "Code", style: { top: '20%' } },
-    { id: 'settings', name: 'Settings', imgSrc: "/api/placeholder/30/30", alt: "Settings", style: { top: '40%' } },
-    // { id: 'vm', name: 'VM', imgSrc: "/api/placeholder/30/30", alt: "VM", style: { top: '60%' } },
-    { id: 'tools', name: 'Tools', imgSrc: "/api/placeholder/30/30", alt: "Tools", style: { top: '80%' } }
+    { id: 'vscode', name: 'VS Code', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg", alt: "VS Code", style: { top: '20%' } },
+    { id: 'intellij', name: 'IntelliJ IDEA', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/intellij/intellij-original.svg", alt: "IntelliJ", style: { top: '40%' } },
+    { id: 'pycharm', name: 'PyCharm', imgSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pycharm/pycharm-original.svg", alt: "PyCharm", style: { top: '60%' } }
   ];
+  
 
   // Initialize refs on mount
   useEffect(() => {
