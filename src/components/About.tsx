@@ -671,10 +671,10 @@ if (!isLoaded) {
         
         {/* Terminal messages */}
         <div className="mt-6 text-left font-mono text-xs text-green-600 bg-black bg-opacity-50 p-2 border border-green-900 terminal-text">
-          <div>> Initializing character parameters</div>
-          <div>> Syncing databases</div>
-          <div>> Connecting to server node #42A7</div>
-          <div className="cursor-blink">> _</div>
+          <div> Initializing character parameters</div>
+          <div> Syncing databases</div>
+          <div> Connecting to server node #42A7</div>
+          <div className="cursor-blink"> _</div>
         </div>
       </div>
       
