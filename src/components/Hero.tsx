@@ -1,5 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, Cpu, Code, Brain, Github, Linkedin, Mail, ExternalLink } from 'lucide-react';
+import { useEffect, useRef, useState } from "react";
+import {
+  ArrowDown,
+  Cpu,
+  Code,
+  Brain,
+  Github,
+  Linkedin,
+  Mail,
+  ExternalLink,
+  Download,
+} from "lucide-react";
 
 // Define types for our component
 interface TechItem {
@@ -30,15 +40,15 @@ class Particle {
     this.speedY = Math.random() * 0.5 - 0.25;
     this.color = `rgba(99, 102, 241, ${Math.random() * 0.5 + 0.2})`;
   }
-  
+
   update(): void {
     this.x += this.speedX;
     this.y += this.speedY;
-    
+
     if (this.x < 0 || this.x > window.innerWidth) this.speedX *= -1;
     if (this.y < 0 || this.y > window.innerHeight) this.speedY *= -1;
   }
-  
+
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = this.color;
     ctx.beginPath();
@@ -52,9 +62,9 @@ const Hero: React.FC = () => {
   const heroRef = useRef<HTMLElement | null>(null);
   const [scrollY, setScrollY] = useState<number>(0);
   const [typingComplete, setTypingComplete] = useState<boolean>(false);
-  
+
   // Typing animation state
-  const [displayedCode, setDisplayedCode] = useState<string>('');
+  const [displayedCode, setDisplayedCode] = useState<string>("");
   const fullCode = `const hasibul = {
   name: "Hasibul Islam Nirjhar",
   location: "Bangladesh",
@@ -66,29 +76,29 @@ const Hero: React.FC = () => {
 
   // Particle animation ref
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  
+
   // Tech stack with icons
   const techStack: TechItem[] = [
-    { name: 'TensorFlow', color: 'bg-orange-500' },
-    { name: 'PyTorch', color: 'bg-red-500' },
-    { name: 'React', color: 'bg-blue-400' },
-    { name: 'Node.js', color: 'bg-green-500' },
-    { name: 'Python', color: 'bg-yellow-500' },
-    { name: 'JavaScript', color: 'bg-yellow-300' }
+    { name: "TensorFlow", color: "bg-orange-500" },
+    { name: "PyTorch", color: "bg-red-500" },
+    { name: "React", color: "bg-blue-400" },
+    { name: "Node.js", color: "bg-green-500" },
+    { name: "Python", color: "bg-yellow-500" },
+    { name: "JavaScript", color: "bg-yellow-300" },
   ];
 
   // Handle canvas animation
   useEffect(() => {
     if (!canvasRef.current) return;
-    
+
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    
+    const ctx = canvas.getContext("2d");
+
     if (!ctx) return;
-    
+
     const particles: Particle[] = [];
     let animationFrameId: number;
-    
+
     // Set canvas dimensions
     const resizeCanvas = (): void => {
       if (canvas) {
@@ -96,10 +106,10 @@ const Hero: React.FC = () => {
         canvas.height = window.innerHeight;
       }
     };
-    
+
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
+    window.addEventListener("resize", resizeCanvas);
+
     // Create particles
     const createParticles = (): void => {
       const particleCount = Math.min(window.innerWidth / 10, 100);
@@ -107,23 +117,23 @@ const Hero: React.FC = () => {
         particles.push(new Particle(canvas.width, canvas.height));
       }
     };
-    
+
     createParticles();
-    
+
     // Animation loop
     const animate = (): void => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       // Draw connections between nearby particles
-      ctx.strokeStyle = 'rgba(99, 102, 241, 0.1)';
+      ctx.strokeStyle = "rgba(99, 102, 241, 0.1)";
       ctx.lineWidth = 0.5;
-      
+
       for (let i = 0; i < particles.length; i++) {
         for (let j = i; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
-          
+
           if (distance < 100) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
@@ -132,20 +142,20 @@ const Hero: React.FC = () => {
           }
         }
       }
-      
+
       // Update and draw particles
-      particles.forEach(particle => {
+      particles.forEach((particle) => {
         particle.update();
         particle.draw(ctx);
       });
-      
+
       animationFrameId = requestAnimationFrame(animate);
     };
-    
+
     animate();
-    
+
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener("resize", resizeCanvas);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -155,7 +165,7 @@ const Hero: React.FC = () => {
     const handleScroll = (): void => {
       setScrollY(window.scrollY);
     };
-    
+
     // Visibility observer
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -165,13 +175,13 @@ const Hero: React.FC = () => {
       },
       { threshold: 0.1 }
     );
-    
+
     if (heroRef.current) {
       observer.observe(heroRef.current);
     }
-    
-    window.addEventListener('scroll', handleScroll);
-    
+
+    window.addEventListener("scroll", handleScroll);
+
     // Typing animation
     let currentIndex = 0;
     const typingInterval = setInterval(() => {
@@ -183,21 +193,21 @@ const Hero: React.FC = () => {
         setTypingComplete(true);
       }
     }, 40);
-    
+
     return () => {
       if (heroRef.current) {
         observer.unobserve(heroRef.current);
       }
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
       clearInterval(typingInterval);
     };
   }, [fullCode]);
 
   // Compute animation classes
-  const containerClasses = isVisible 
-    ? 'opacity-100 translate-y-0' 
-    : 'opacity-0 translate-y-10';
-    
+  const containerClasses = isVisible
+    ? "opacity-100 translate-y-0"
+    : "opacity-0 translate-y-10";
+
   // Calculate parallax effect
   const parallaxOffset = scrollY * 0.15;
 
@@ -205,21 +215,18 @@ const Hero: React.FC = () => {
   const socialLinks: SocialLink[] = [
     { icon: <Github size={20} />, href: "#github", label: "GitHub" },
     { icon: <Linkedin size={20} />, href: "#linkedin", label: "LinkedIn" },
-    { icon: <Mail size={20} />, href: "#contact", label: "Email" }
+    { icon: <Mail size={20} />, href: "#contact", label: "Email" },
   ];
 
   return (
-    <section 
-      id="hero" 
+    <section
+      id="hero"
       ref={heroRef}
       className="min-h-screen  flex items-center justify-center relative overflow-hidden bg-ml-dark"
     >
       {/* Particle Background */}
-      <canvas 
-        ref={canvasRef} 
-        className="absolute inset-0 z-0" 
-      />
-      
+      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+
       {/* Background Gradients */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full blur-3xl opacity-20 bg-ml-primary animate-float"></div>
@@ -228,16 +235,18 @@ const Hero: React.FC = () => {
       </div>
 
       <div className="container z-10 px-4 sm:px-6 lg:px-8 mx-auto">
-        <div 
+        <div
           className={`transition-all duration-1000 ease-out ${containerClasses}`}
         >
           <div className="grid grid-cols-1 mt-10 lg:grid-cols-12 gap-8 items-center">
             {/* LEFT: TEXT CONTENT (7 columns) */}
             <div className="lg:col-span-7 space-y-6">
-              <div 
+              <div
                 className="inline-block"
                 style={{
-                  animation: isVisible ? 'fadeSlideUp 0.8s ease forwards' : 'none',
+                  animation: isVisible
+                    ? "fadeSlideUp 0.8s ease forwards"
+                    : "none",
                   opacity: 0,
                 }}
               >
@@ -247,10 +256,12 @@ const Hero: React.FC = () => {
                 </div>
               </div>
 
-              <h1 
+              <h1
                 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
                 style={{
-                  animation: isVisible ? 'fadeSlideUp 0.8s 0.2s ease forwards' : 'none',
+                  animation: isVisible
+                    ? "fadeSlideUp 0.8s 0.2s ease forwards"
+                    : "none",
                   opacity: 0,
                 }}
               >
@@ -263,10 +274,12 @@ const Hero: React.FC = () => {
                 </span>
               </h1>
 
-              <p 
+              <p
                 className="text-xl text-white/80 leading-relaxed"
                 style={{
-                  animation: isVisible ? 'fadeSlideUp 0.8s 0.4s ease forwards' : 'none',
+                  animation: isVisible
+                    ? "fadeSlideUp 0.8s 0.4s ease forwards"
+                    : "none",
                   opacity: 0,
                 }}
               >
@@ -275,19 +288,22 @@ const Hero: React.FC = () => {
                   Software Engineering
                   <span className="absolute -bottom-1 left-0 w-0 h-1 bg-ml-accent opacity-70 rounded group-hover:w-full transition-all duration-300"></span>
                 </span>{" "}
-                student exploring the frontiers of AI, Machine Learning, and Web Development.
+                student exploring the frontiers of AI, Machine Learning, and Web
+                Development.
               </p>
 
               {/* Social icons */}
-              <div 
+              <div
                 className="flex space-x-4 pt-2"
                 style={{
-                  animation: isVisible ? 'fadeSlideUp 0.8s 0.6s ease forwards' : 'none',
+                  animation: isVisible
+                    ? "fadeSlideUp 0.8s 0.6s ease forwards"
+                    : "none",
                   opacity: 0,
                 }}
               >
                 {socialLinks.map((social, index) => (
-                  <a 
+                  <a
                     key={social.label}
                     href={social.href}
                     aria-label={social.label}
@@ -299,22 +315,25 @@ const Hero: React.FC = () => {
                 ))}
               </div>
 
-              <div 
+              <div
                 className="flex flex-wrap gap-4 pt-4"
                 style={{
-                  animation: isVisible ? 'fadeSlideUp 0.8s 0.8s ease forwards' : 'none',
+                  animation: isVisible
+                    ? "fadeSlideUp 0.8s 0.8s ease forwards"
+                    : "none",
                   opacity: 0,
                 }}
               >
-                <a 
-                  href="#projects" 
+                <a
+                  href="/resume.pdf"
+                  download
                   className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-ml-primary to-ml-accent rounded-lg text-white font-medium shadow-lg hover:shadow-ml-primary/40 transition-all duration-300 hover:scale-105 hover:-translate-y-1"
                 >
-                  <Code size={18} />
-                  <span>View Projects</span>
+                  <Download size={18} />
+                  <span>Download CV</span>
                 </a>
-                <a 
-                  href="#contact" 
+                <a
+                  href="#contact"
                   className="flex items-center space-x-2 px-6 py-3 border border-white/20 rounded-lg text-white font-medium backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:border-white/40 hover:-translate-y-1"
                 >
                   <span>Contact Me</span>
@@ -323,27 +342,35 @@ const Hero: React.FC = () => {
               </div>
 
               {/* Tech stack animation */}
-              <div 
+              <div
                 className="pt-6"
                 style={{
-                  animation: isVisible ? 'fadeSlideUp 0.8s 1s ease forwards' : 'none',
+                  animation: isVisible
+                    ? "fadeSlideUp 0.8s 1s ease forwards"
+                    : "none",
                   opacity: 0,
                 }}
               >
-                <p className="text-white/60 text-sm mb-3">Technologies I work with:</p>
+                <p className="text-white/60 text-sm mb-3">
+                  Technologies I work with:
+                </p>
                 <div className="flex flex-wrap gap-3">
                   {techStack.map((tech, index) => (
-                    <div 
+                    <div
                       key={tech.name}
                       className={`px-3 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-white/80 backdrop-blur-sm hover:scale-110 transition-all duration-300 group hover:bg-white/10 hover:shadow-lg`}
-                      style={{ 
+                      style={{
                         animationDelay: `${1.2 + index * 0.1}s`,
-                        animation: isVisible ? 'fadeIn 0.5s ease forwards' : 'none',
-                        opacity: 0
+                        animation: isVisible
+                          ? "fadeIn 0.5s ease forwards"
+                          : "none",
+                        opacity: 0,
                       }}
                     >
                       <div className="flex items-center space-x-1.5">
-                        <span className={`inline-block w-2 h-2 rounded-full ${tech.color}`}></span>
+                        <span
+                          className={`inline-block w-2 h-2 rounded-full ${tech.color}`}
+                        ></span>
                         <span>{tech.name}</span>
                       </div>
                     </div>
@@ -363,13 +390,15 @@ const Hero: React.FC = () => {
               </div>
 
               {/* PROFILE IMAGE */}
-              <div 
+              <div
                 className="relative mx-auto w-40 h-40 md:w-48 md:h-48"
-                style={{ 
-                  animation: isVisible ? 'fadeIn 1s ease forwards' : 'none',
+                style={{
+                  animation: isVisible ? "fadeIn 1s ease forwards" : "none",
                   opacity: 0,
-                  transform: isVisible ? `translateY(${-parallaxOffset}px)` : 'translateY(20px)',
-                  transition: 'transform 0.3s ease-out',
+                  transform: isVisible
+                    ? `translateY(${-parallaxOffset}px)`
+                    : "translateY(20px)",
+                  transition: "transform 0.3s ease-out",
                 }}
               >
                 <div className="absolute inset-0 blur-md bg-ml-primary/30 rounded-full animate-pulse"></div>
@@ -380,7 +409,7 @@ const Hero: React.FC = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                
+
                 {/* Orbiting circle */}
                 <div className="absolute inset-0 animate-orbit pointer-events-none">
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6 w-4 h-4 rounded-full bg-ml-accent/70"></div>
@@ -388,13 +417,17 @@ const Hero: React.FC = () => {
               </div>
 
               {/* CODE CARD */}
-              <div 
+              <div
                 className="relative z-10 p-2 md:p-4 rounded-2xl overflow-hidden mt-8 bg-[rgba(16,20,30,0.8)] backdrop-blur-md border border-white/10 shadow-lg hover:shadow-ml-primary/20 transition-all duration-300"
-                style={{ 
-                  animation: isVisible ? 'fadeIn 1s 0.3s ease forwards, floatAnimation 5s ease-in-out infinite' : 'none',
+                style={{
+                  animation: isVisible
+                    ? "fadeIn 1s 0.3s ease forwards, floatAnimation 5s ease-in-out infinite"
+                    : "none",
                   opacity: 0,
-                  transform: isVisible ? `translateY(${parallaxOffset * 0.5}px)` : 'translateY(40px)',
-                  transition: 'transform 0.3s ease-out',
+                  transform: isVisible
+                    ? `translateY(${parallaxOffset * 0.5}px)`
+                    : "translateY(40px)",
+                  transition: "transform 0.3s ease-out",
                 }}
               >
                 <div className="coding-animation text-left p-4 bg-ml-dark rounded-lg overflow-hidden border border-white/10">
@@ -406,61 +439,71 @@ const Hero: React.FC = () => {
 
                   <pre className="text-sm font-mono text-green-400 leading-relaxed overflow-x-auto">
                     <code>{displayedCode}</code>
-                    <span className={`h-4 w-2 bg-white/70 inline-block ${typingComplete ? 'animate-pulse' : 'animate-typing-cursor'}`}></span>
+                    <span
+                      className={`h-4 w-2 bg-white/70 inline-block ${
+                        typingComplete
+                          ? "animate-pulse"
+                          : "animate-typing-cursor"
+                      }`}
+                    ></span>
                   </pre>
                 </div>
-                
+
                 {/* Floating ML icons */}
                 <div className="absolute top-3 right-3 opacity-40 animate-float">
                   <Cpu size={20} className="text-ml-accent" />
                 </div>
-                
+
                 {/* Decorative elements */}
                 <div className="absolute -bottom-2 -left-2 w-8 h-8 text-ml-primary/40 animate-spin-slow">
                   <div className="w-full h-full border-4 border-current rounded-full border-t-transparent"></div>
                 </div>
               </div>
-              
+
               {/* Small code snippets floating */}
-              <div 
+              <div
                 className="absolute -right-4 top-12 p-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-sm"
-                style={{ 
-                  animation: 'float 3s ease-in-out infinite, fadeIn 1s 0.8s forwards',
+                style={{
+                  animation:
+                    "float 3s ease-in-out infinite, fadeIn 1s 0.8s forwards",
                   opacity: 0,
                 }}
               >
                 <div className="text-xs text-ml-accent font-mono">ML.run()</div>
               </div>
-              
-              <div 
+
+              <div
                 className="absolute -left-2 bottom-8 p-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-sm"
-                style={{ 
-                  animation: 'float 4s ease-in-out infinite, fadeIn 1s 1s forwards',
-                  animationDelay: '0.5s, 1s',
+                style={{
+                  animation:
+                    "float 4s ease-in-out infinite, fadeIn 1s 1s forwards",
+                  animationDelay: "0.5s, 1s",
                   opacity: 0,
                 }}
               >
-                <div className="text-xs text-green-400 font-mono">{"{"} AI: true {"}"}</div>
+                <div className="text-xs text-green-400 font-mono">
+                  {"{"} AI: true {"}"}
+                </div>
               </div>
             </div>
           </div>
 
           {/* Scroll Indicator */}
-          <div 
+          <div
             className="mt-16 w-full flex justify-center"
             style={{
-              animation: isVisible ? 'fadeIn 1s 1.2s ease forwards' : 'none',
+              animation: isVisible ? "fadeIn 1s 1.2s ease forwards" : "none",
               opacity: 0,
             }}
           >
-            <a 
-              href="#about" 
+            <a
+              href="#about"
               className="flex flex-col items-center justify-center text-white/60 hover:text-white transition-colors animate-bounce"
               onClick={(e) => {
                 e.preventDefault();
-                const aboutSection = document.getElementById('about');
+                const aboutSection = document.getElementById("about");
                 if (aboutSection) {
-                  aboutSection.scrollIntoView({ behavior: 'smooth' });
+                  aboutSection.scrollIntoView({ behavior: "smooth" });
                 }
               }}
             >
@@ -472,7 +515,7 @@ const Hero: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Global animation styles */}
       <style jsx global>{`
         @keyframes fadeSlideUp {
@@ -485,52 +528,76 @@ const Hero: React.FC = () => {
             transform: translateY(0);
           }
         }
-        
+
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
-        
+
         @keyframes floatAnimation {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
         }
-        
+
         @keyframes orbit {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
         }
-        
+
         @keyframes typing-cursor {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0;
+          }
         }
-        
+
         .animate-float-slow {
           animation: floatAnimation 8s ease-in-out infinite;
         }
-        
+
         .animate-spin-slow {
           animation: spin 8s linear infinite;
         }
-        
+
         .animate-spin-slow-reverse {
           animation: spin 8s linear infinite reverse;
         }
-        
+
         .animate-orbit {
           animation: orbit 8s linear infinite;
         }
-        
+
         .animate-gradient-animation {
           background-size: 200% 200%;
           animation: gradientAnimation 4s ease infinite;
         }
-        
+
         @keyframes gradientAnimation {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
         }
       `}</style>
     </section>

@@ -498,7 +498,7 @@ const About = () => {
 useEffect(() => {
   const loadingInterval = setInterval(() => {
     setLoadingProgress(prev => {
-      const newProgress = prev + 5;
+      const newProgress = prev + 2;
       if (newProgress >= 100) {
         clearInterval(loadingInterval);
         setTimeout(() => setIsLoaded(true), 500);
@@ -608,28 +608,341 @@ useEffect(() => {
     { icon: <ShieldCheck size={20} className="text-green-400" />, name: 'Bug Slayer', desc: 'Eliminated 100+ critical bugs' }
   ];
 
-  // Loading screen
-  if (!isLoaded) {
-    return (
-      <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50">
-        <div className="text-4xl font-bold mb-8 text-green-500 glitch-text" data-text="LOADING CHARACTER...">LOADING CHARACTER...</div>
-        <div className="w-64 h-3 bg-gray-800 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-green-500 to-blue-500 rounded-full transition-all duration-300 pulse-glow"
-            style={{ width: `${loadingProgress}%` }}
-          ></div>
+ // Loading screen
+if (!isLoaded) {
+  return (
+    <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50 overflow-hidden">
+      {/* Background matrix effect */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="matrix-bg"></div>
+        <div className="grid-overlay"></div>
+      </div>
+      
+      {/* Scanner line effect */}
+      <div className="absolute inset-0 scanner-line"></div>
+      <div className="absolute inset-0 scanner-line-secondary"></div>
+      
+      <div className="text-4xl font-bold mb-8 text-green-500 glitch-text" data-text="LOADING CHARACTER...">LOADING CHARACTER...</div>
+      
+      {/* Digital noise overlay */}
+      <div className="absolute inset-0 digital-noise opacity-10"></div>
+      
+      <div className="w-64 h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700 relative">
+        <div 
+          className="h-full bg-gradient-to-r from-green-500 via-cyan-500 to-blue-500 rounded-full transition-all duration-300 pulse-glow"
+          style={{ width: `${loadingProgress}%` }}
+        >
+          <div className="absolute inset-0 glow-overlay"></div>
         </div>
-        <div className="mt-2 text-green-400 font-mono">{loadingProgress}%</div>
-        <div className="mt-8 max-w-md text-center">
-          <p className="text-gray-500 font-mono text-sm typing-text">
-            Loading character data...
-            <br/>Initializing skill matrix...
-            <br/>Calibrating achievements...
-          </p>
+        {/* Progress bar scanline */}
+        <div className="absolute inset-0 scanline"></div>
+        
+        {/* Notches on progress bar */}
+        <div className="absolute inset-0 flex justify-between px-1">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="w-px h-full bg-gray-600 opacity-50"></div>
+          ))}
         </div>
       </div>
-    );
-  }
+      
+      <div className="mt-2 text-green-400 font-mono flicker-text tracking-widest">{loadingProgress}%</div>
+      
+      <div className="mt-8 max-w-md text-center">
+        <p className="text-gray-500 font-mono text-sm typing-animation">
+          Loading character data...
+          <br/>Initializing skill matrix...
+          <br/>Calibrating achievements...
+          <br/>Syncing neural interface...
+          <br/>Compiling biometric data...
+        </p>
+        
+        {/* Data streams */}
+        <div className="mt-6 grid grid-cols-3 gap-2">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="data-stream-container">
+              <div className="data-stream" style={{ animationDelay: `${i * 0.3}s` }}></div>
+              <div className="text-xs text-cyan-500 opacity-70 absolute bottom-1 left-1 font-mono">
+                {i === 0 ? "NEURAL" : i === 1 ? "SYSTEMS" : "NETWORK"}
+              </div>
+              <div className="blink-led"></div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Terminal messages */}
+        <div className="mt-6 text-left font-mono text-xs text-green-600 bg-black bg-opacity-50 p-2 border border-green-900 terminal-text">
+          <div>> Initializing character parameters</div>
+          <div>> Syncing databases</div>
+          <div>> Connecting to server node #42A7</div>
+          <div className="cursor-blink">> _</div>
+        </div>
+      </div>
+      
+      {/* Decorative elements */}
+      <div className="absolute top-4 right-4 text-xs text-green-500 font-mono opacity-60">
+        SYSTEM v2.077
+      </div>
+      <div className="absolute bottom-4 left-4 text-xs text-green-500 font-mono opacity-60">
+        <div className="flex items-center">
+          <div className="w-2 h-2 bg-green-500 rounded-full mr-2 pulse-slow"></div>
+          CONNECTION SECURE
+        </div>
+      </div>
+      
+      <style jsx>{`
+        @keyframes pulse {
+          0% { opacity: 0.6; }
+          50% { opacity: 1; }
+          100% { opacity: 0.6; }
+        }
+        
+        @keyframes pulseSlow {
+          0% { opacity: 0.5; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1.2); }
+          100% { opacity: 0.5; transform: scale(0.8); }
+        }
+        
+        @keyframes scanline {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100%); }
+        }
+        
+        @keyframes scanlineHorizontal {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        
+        @keyframes typing {
+          from { width: 0; }
+          to { width: 100%; }
+        }
+        
+        @keyframes flicker {
+          0% { opacity: 1; }
+          8% { opacity: 0.8; }
+          10% { opacity: 1; }
+          20% { opacity: 1; }
+          20.5% { opacity: 0.5; }
+          21% { opacity: 1; }
+          60% { opacity: 1; }
+          60.5% { opacity: 0.2; }
+          61% { opacity: 1; }
+          90% { opacity: 1; }
+          95% { opacity: 0.8; }
+          100% { opacity: 1; }
+        }
+        
+        @keyframes dataStream {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100%); }
+        }
+        
+        @keyframes blink {
+          0%, 49% { opacity: 0; }
+          50%, 100% { opacity: 1; }
+        }
+        
+        @keyframes noise {
+          0%, 100% { background-position: 0 0; }
+          10% { background-position: -5% -10%; }
+          20% { background-position: -15% 5%; }
+          30% { background-position: 7% -25%; }
+          40% { background-position: 20% 25%; }
+          50% { background-position: -25% 10%; }
+          60% { background-position: 15% 5%; }
+          70% { background-position: 0% 15%; }
+          80% { background-position: 25% 35%; }
+          90% { background-position: -10% 10%; }
+        }
+        
+        .pulse-glow {
+          animation: pulse 1.5s infinite;
+          box-shadow: 0 0 15px rgba(6, 182, 212, 0.7);
+        }
+        
+        .pulse-slow {
+          animation: pulseSlow 2.5s infinite;
+        }
+        
+        .glow-overlay {
+          box-shadow: 0 0 10px 2px rgba(6, 182, 212, 0.7) inset;
+        }
+        
+        .typing-animation {
+          overflow: hidden;
+          white-space: nowrap;
+          border-right: 2px solid #22d3ee;
+          animation: typing 6s steps(60), flicker 0.75s step-end infinite alternate;
+        }
+        
+        .flicker-text {
+          animation: flicker 3s infinite;
+        }
+        
+        .matrix-bg {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(rgba(0, 20, 0, 0.5), rgba(0, 20, 0, 0.5)), 
+                      repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 255, 0, 0.1) 1px, rgba(0, 255, 0, 0.1) 2px);
+          overflow: hidden;
+        }
+        
+        .grid-overlay {
+          position: absolute;
+          inset: 0;
+          background: 
+            linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+            linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+          background-size: 20px 20px;
+        }
+        
+        .scanline {
+          height: 2px;
+          width: 100%;
+          background-color: rgba(6, 182, 212, 0.5);
+          position: absolute;
+          animation: scanline 2s linear infinite;
+        }
+        
+        .scanner-line {
+          height: 2px;
+          width: 100%;
+          background: linear-gradient(to right, transparent, rgba(6, 182, 212, 0.8), transparent);
+          opacity: 0.6;
+          animation: scanline 4s linear infinite;
+        }
+        
+        .scanner-line-secondary {
+          width: 2px;
+          height: 100%;
+          background: linear-gradient(to bottom, transparent, rgba(6, 182, 212, 0.5), transparent);
+          opacity: 0.3;
+          animation: scanlineHorizontal 7s linear infinite;
+        }
+        
+        .data-stream-container {
+          height: 40px;
+          overflow: hidden;
+          background-color: rgba(2, 20, 20, 0.5);
+          border: 1px solid rgba(6, 182, 212, 0.3);
+          position: relative;
+        }
+        
+        .data-stream {
+          position: absolute;
+          height: 300%;
+          width: 100%;
+          top: -100%;
+          background: repeating-linear-gradient(
+            0deg,
+            rgba(6, 182, 212, 0.15) 0px,
+            rgba(6, 182, 212, 0.15) 1px,
+            transparent 1px,
+            transparent 5px
+          );
+          animation: dataStream 8s linear infinite;
+        }
+        
+        .glitch-text {
+          position: relative;
+          text-shadow: 0 0 5px rgba(6, 182, 212, 0.8);
+        }
+        
+        .glitch-text:before, .glitch-text:after {
+          content: attr(data-text);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+        
+        .glitch-text:before {
+          left: 2px;
+          text-shadow: -2px 0 #ff00ff;
+          animation: glitch-animation 1s infinite linear alternate-reverse;
+        }
+        
+        .glitch-text:after {
+          left: -2px;
+          text-shadow: 2px 0 #00ffff;
+          animation: glitch-animation 2s infinite linear alternate-reverse;
+        }
+        
+        .blink-led {
+          position: absolute;
+          top: 2px;
+          right: 2px;
+          width: 4px;
+          height: 4px;
+          background-color: #00ffff;
+          border-radius: 50%;
+          animation: blink 1s infinite;
+        }
+        
+        .cursor-blink {
+          animation: blink 1s infinite;
+        }
+        
+        .terminal-text {
+          height: 80px;
+          overflow: hidden;
+          box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+        }
+        
+        .digital-noise {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+          animation: noise 0.5s infinite;
+          pointer-events: none;
+        }
+        
+        @keyframes glitch-animation {
+          0% {
+            clip-path: inset(30% 0 70% 0);
+            opacity: 0;
+          }
+          20% {
+            clip-path: inset(10% 0 90% 0);
+            opacity: 0;
+          }
+          41% {
+            clip-path: inset(40% 0 60% 0);
+            opacity: 0.8;
+          }
+          42% {
+            clip-path: inset(40% 0 60% 0);
+            opacity: 0;
+          }
+          45% {
+            clip-path: inset(80% 0 20% 0);
+            opacity: 1;
+          }
+          61% {
+            clip-path: inset(20% 0 80% 0);
+            opacity: 0;
+          }
+          62% {
+            clip-path: inset(60% 0 40% 0);
+            opacity: 0.5;
+          }
+          70% {
+            clip-path: inset(10% 0 90% 0);
+            opacity: 0;
+          }
+          100% {
+            clip-path: inset(20% 0 80% 0);
+            opacity: 0;
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
 
   return (
     <section id="about" className="py-12 relative overflow-hidden bg-ml-dark min-h-screen game-container">
@@ -648,7 +961,7 @@ useEffect(() => {
         {/* Grid lines */}
         <div className="absolute inset-0 grid-overlay"></div>
         
-        {/* Floating particles
+        {/* Floating particles */}
         <div className="absolute inset-0 overflow-hidden">
           {Array.from({ length: 20 }).map((_, i) => (
             <div 
@@ -662,7 +975,7 @@ useEffect(() => {
               }}
             ></div>
           ))}
-        </div> */}
+        </div>
 
 
         

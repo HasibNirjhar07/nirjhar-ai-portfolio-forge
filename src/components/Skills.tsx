@@ -154,7 +154,7 @@ const FloatingGalaxy = ({ count = 30 }) => {
 const AnimatedGradient = () => {
   return (
     <div className="absolute inset-0 z-0">
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-purple-900/30 to-black" />
+      <div className="absolute inset-0 bg-ml-dark" />
       <div className="absolute inset-0 animate-gradientFlow opacity-30" />
     </div>
   );
@@ -253,7 +253,7 @@ const Skills = () => {
       <AnimatedGradient />
       
       {/* Floating particles */}
-      <FloatingGalaxy count={40} />
+      {/* <FloatingGalaxy count={30} /> */}
       
       {/* Animated grid background */}
       <div className="absolute inset-0 bg-grid opacity-20"></div>
