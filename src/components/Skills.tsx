@@ -156,6 +156,12 @@ const AnimatedGradient = () => {
     <div className="absolute inset-0 z-0">
       <div className="absolute inset-0 bg-ml-dark" />
       <div className="absolute inset-0 animate-gradientFlow opacity-30" />
+
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full blur-3xl opacity-20 bg-ml-primary animate-float"></div>
+        <div className="absolute top-1/3 right-20 w-80 h-80 rounded-full blur-3xl opacity-15 bg-indigo-500 animate-pulse"></div>
+        <div className="absolute -bottom-20 left-1/4 w-72 h-72 rounded-full blur-3xl opacity-10 bg-ml-accent animate-float-slow"></div>
+      </div>
     </div>
   );
 };
@@ -298,7 +304,7 @@ const Skills = () => {
                   }}
                 >
                   <div className="tech-icon bg-[#1E123A] w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-125 hover:shadow-purple-500/50 transition-all duration-300">
-                    <img src={tech.imgSrc} alt={tech.alt} className="w-6 h-6" />
+                    <img src={tech.imgSrc} alt={tech.alt} className="w-10 h-10" />
                     <span className="tech-tooltip">{tech.name}</span>
                   </div>
                 </div>
@@ -320,7 +326,7 @@ const Skills = () => {
                   }}
                 >
                   <div className="tech-icon bg-[#1E123A] w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-125 hover:shadow-purple-500/50 transition-all duration-300">
-                    <img src={tech.imgSrc} alt={tech.alt} className="w-6 h-6" />
+                    <img src={tech.imgSrc} alt={tech.alt} className="w-10 h-10" />
                     <span className="tech-tooltip">{tech.name}</span>
                   </div>
                 </div>
@@ -330,7 +336,7 @@ const Skills = () => {
 
           {/* Left side tech icons with hover effects */}
           <div className="absolute left-4 top-0 bottom-0 h-full">
-            <div className="relative w-16 h-full">
+            <div className="relative w-24 h-full">
               {leftTechIcons.map((tech, index) => (
                 <div 
                   key={tech.id} 
@@ -341,8 +347,8 @@ const Skills = () => {
                     transitionDelay: `${index * 100 + 600}ms`
                   }}
                 >
-                  <div className="tech-icon bg-[#1E123A] w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-125 hover:shadow-purple-500/50 transition-all duration-300">
-                    <img src={tech.imgSrc} alt={tech.alt} className="w-5 h-5" />
+                  <div className="tech-icon bg-[#1E123A] w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-125 hover:shadow-purple-500/50 transition-all duration-300">
+                    <img src={tech.imgSrc} alt={tech.alt} className="w-10 h-10" />
                     <span className="tech-tooltip right-full mr-2">{tech.name}</span>
                   </div>
                 </div>
@@ -352,7 +358,7 @@ const Skills = () => {
 
           {/* Right side tech icons with hover effects */}
           <div className="absolute right-4 top-0 bottom-0 h-full">
-            <div className="relative w-16 h-full">
+            <div className="relative w-24 h-full">
               {rightTechIcons.map((tech, index) => (
                 <div 
                   key={tech.id}
@@ -363,8 +369,8 @@ const Skills = () => {
                     transitionDelay: `${index * 100 + 800}ms`
                   }}
                 >
-                  <div className="tech-icon bg-[#1E123A] w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-125 hover:shadow-purple-500/50 transition-all duration-300">
-                    <img src={tech.imgSrc} alt={tech.alt} className="w-5 h-5" />
+                  <div className="tech-icon bg-[#1E123A] w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-125 hover:shadow-purple-500/50 transition-all duration-300">
+                    <img src={tech.imgSrc} alt={tech.alt} className="w-10 h-10" />
                     <span className="tech-tooltip left-full ml-2">{tech.name}</span>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Mail, MapPin, Send, Zap, Globe, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import axios from 'axios'; // Make sure to install axios: npm install axios
 
 const Contact = () => {
   const sectionRef = useRef(null);
@@ -55,27 +56,30 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      // Here you would typically have an API endpoint to send the form data
-      // For this example, we'll simulate a successful API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await axios.post('http://localhost:3000/api/contact', formData);
+
       
-      // Show success message
-      toast({
-        title: "TRANSMISSION COMPLETE",
-        description: "Your message has been encrypted and sent. Expect a response soon.",
-        variant: "default",
-      });
-      
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        message: ''
-      });
+      if (response.status === 200) {
+        toast({
+          title: "TRANSMISSION COMPLETE",
+          description: "Your message has been sent successfully. We'll respond soon.",
+          variant: "default",
+        });
+        
+        // Reset form after successful submission
+        setFormData({
+          name: '',
+          email: '',
+          message: ''
+        });
+      } else {
+        throw new Error('Server responded with an error');
+      }
     } catch (error) {
+      console.error('Error submitting form:', error);
       toast({
         title: "TRANSMISSION FAILED",
-        description: "Connection interrupted. Please try again.",
+        description: "There was an error sending your message. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -277,7 +281,9 @@ const Contact = () => {
                 <h3 className="text-xl font-bold text-white mb-6">Neural Network Links</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <a 
-                    href="#" 
+                    href="https://facebook.com" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center justify-center p-4 border border-purple-500/30 rounded-lg hover:bg-purple-900/30 transition-colors group"
                   >
                     <svg className="w-6 h-6 text-cyan-400 transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -285,7 +291,9 @@ const Contact = () => {
                     </svg>
                   </a>
                   <a 
-                    href="#" 
+                    href="https://twitter.com" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center justify-center p-4 border border-purple-500/30 rounded-lg hover:bg-purple-900/30 transition-colors group"
                   >
                     <svg className="w-6 h-6 text-cyan-400 transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -293,7 +301,9 @@ const Contact = () => {
                     </svg>
                   </a>
                   <a 
-                    href="#" 
+                    href="https://github.com" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center justify-center p-4 border border-purple-500/30 rounded-lg hover:bg-purple-900/30 transition-colors group"
                   >
                     <svg className="w-6 h-6 text-cyan-400 transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -301,11 +311,13 @@ const Contact = () => {
                     </svg>
                   </a>
                   <a 
-                    href="#" 
+                    href="https://linkedin.com" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center justify-center p-4 border border-purple-500/30 rounded-lg hover:bg-purple-900/30 transition-colors group"
                   >
                     <svg className="w-6 h-6 text-cyan-400 transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path fillRule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.51 0 10-4.48 10-10S17.51 2 12 2zm6.605 4.61a8.502 8.502 0 011.93 5.314c-.281-.054-3.101-.629-5.943-.271-.065-.141-.12-.293-.184-.445a25.416 25.416 0 00-.564-1.236c3.145-1.28 4.577-3.124 4.761-3.362zM12 3.475c2.17 0 4.154.813 5.662 2.148-.152.216-1.443 1.941-4.48 3.08-1.399-2.57-2.95-4.675-3.189-5A8.687 8.687 0 0112 3.475zm-3.633.803a53.896 53.896 0 013.167 4.935c-3.992 1.063-7.517 1.04-7.896 1.04a8.581 8.581 0 014.729-5.975zM3.453 12.01v-.26c.37.01 4.512.065 8.775-1.215.25.477.477.965.694 1.453-.109.033-.228.065-.336.098-4.404 1.42-6.747 5.303-6.942 5.629a8.522 8.522 0 01-2.19-5.705zM12 20.547a8.482 8.482 0 01-5.239-1.8c.152-.315 1.888-3.656 6.703-5.337.022-.01.033-.01.054-.022a35.318 35.318 0 011.823 6.475 8.4 8.4 0 01-3.341.684zm4.761-1.465c-.086-.52-.542-3.015-1.659-6.084 2.679-.423 5.022.271 5.314.369a8.468 8.468 0 01-3.655 5.715z" clipRule="evenodd" />
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
                     </svg>
                   </a>
                 </div>

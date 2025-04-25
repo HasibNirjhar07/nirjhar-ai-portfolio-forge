@@ -1,0 +1,71 @@
+// File: pages/api/contact.js
+import nodemailer from 'nodemailer'; // Install with: npm install nodemailer
+
+
+
+export default async function handler(req, res) {
+
+   console.log('Contact API called with:', req.body);
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
+  try {
+    const { name, email, message } = req.body;
+    
+    // Input validation
+    if (!name || !email || !message) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    // Create a nodemailer transporter using your email service
+    // For production, you should use environment variables for these credentials
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+
+    // Email content
+    const mailOptions = {
+      from: process.env.SMTP_USER,
+      to: process.env.RECIPIENT_EMAIL || 'hasibnirjhar100@gmail.com', // Your email to receive messages
+      replyTo: email,
+      subject: `New contact form message from ${name}`,
+      text: `
+        Name: ${name}
+        Email: ${email}
+        
+        Message:
+        ${message}
+      `,
+      html: `
+        <h3>New Contact Form Submission</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message.replace(/\n/g, '<br>')}</p>
+      `,
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+
+    // Send success response
+    return res.status(200).json({ message: 'Message sent successfully' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return res.status(500).json({ message: 'Error sending message. Please try again later.' });
+  }
+}
