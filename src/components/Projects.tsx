@@ -28,32 +28,33 @@ const Projects = () => {
     return () => clearInterval(interval);
   }, []);
   
-  const projects: Project[] = [
-    {
-      title: "ML Sentiment Analyzer",
-      description: "A machine learning application that analyzes sentiment in text using natural language processing techniques.",
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
-      tags: ["Python", "TensorFlow", "NLP", "React"],
-      github: "#",
-      demo: "#"
-    },
-    {
-      title: "Neural Network Visualizer",
-      description: "Interactive web application to visualize neural network architectures and their training process.",
-      image: "https://images.unsplash.com/photo-1501526029524-a8ea952b15be?q=80&w=2070&auto=format&fit=crop",
-      tags: ["JavaScript", "React", "D3.js", "TensorFlow.js"],
-      github: "#",
-      demo: "#"
-    },
-    {
-      title: "Smart Task Management",
-      description: "Task management application with ML-powered prioritization and time estimation features.",
-      image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=2070&auto=format&fit=crop",
-      tags: ["NextJs", "MongoDB", "Python", "ML"],
-      github: "#",
-      demo: "#"
-    },
-  ];
+ const projects: Project[] = [
+  {
+    title: "HobbyHub - Social Platform for Hobbyists",
+    description: "A full-stack social media platform for hobbyists to share passions, post content, comment, follow others, and explore hobbies. Features dual authentication, media uploads, and admin reporting.",
+    image: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=2070&auto=format&fit=crop", // Social platform vibe
+    tags: ["Node.js", "Express", "MongoDB", "Passport.js", "MVC", "Twilio"],
+    github: "https://github.com/HasibNirjhar07/HobbyHub",
+    demo: "#"
+  },
+  {
+    title: "Lingua Kids - Gamified English Learning",
+    description: "An engaging web app to help children improve English skills through reading, writing, listening, and speaking exercises. Includes streak tracking, leaderboards, and animated UI for kids.",
+    image: "https://lanecove.s3.ap-southeast-2.amazonaws.com/wp-content/uploads/2017/08/04230359/Spanish-for-kids-Sydney-and-Melbourne.jpg", // Child learning theme
+    tags: ["Next.js", "Tailwind CSS", "React", "TypeScript", "Framer Motion", "ML Integration"],
+    github: "https://github.com/HasibNirjhar07/lingua-kids",
+    demo: "#"
+  },
+  {
+    title: "Shahajjo - Real-time Help App",
+    description: "A real-time help app built to connect people in need with volunteers or local helpers. Features live tracking, location-based requests, and a robust backend for scalability.",
+    image: "https://www.ci.seaside.ca.us/ImageRepository/Document?documentID=6088", // Help and support theme
+    tags: ["React Native", "Firebase", "Google Maps API", "Real-Time DB"],
+    github: "https://github.com/hasin023/shahajjo",
+    demo: "#"
+  },
+];
+
 
   useEffect(() => {
     const observer = new IntersectionObserver(
