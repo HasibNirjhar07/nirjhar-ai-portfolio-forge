@@ -1,29 +1,35 @@
 import { useEffect, useRef, useState } from 'react';
 import { Mail, MapPin, Send, Zap, Globe, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import axios from 'axios'; // Make sure to install axios: npm install axios
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const sectionRef = useRef(null);
+  const formRef = useRef(); // Reference for EmailJS
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    user_name: '', // Changed to match EmailJS template
+    user_email: '', // Changed to match EmailJS template
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const { toast } = useToast();
 
+  // EmailJS configuration - Replace with your actual values
+  const EMAILJS_SERVICE_ID = 'service_lil9cjz';
+  const EMAILJS_TEMPLATE_ID = 'template_8ytdtfa';
+  const EMAILJS_PUBLIC_KEY = 'OwaUGUTHDJs71lZeJ';
+
   // Form validation function
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.user_name.trim()) newErrors.user_name = "Name is required";
     
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
+    if (!formData.user_email.trim()) {
+      newErrors.user_email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.user_email)) {
+      newErrors.user_email = "Please enter a valid email";
     }
     
     if (!formData.message.trim()) newErrors.message = "Message is required";
@@ -56,30 +62,43 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      await axios.post('http://localhost:3000/api/contact', formData);
+      // Send email using EmailJS
+      const result = await emailjs.sendForm(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        EMAILJS_PUBLIC_KEY
+      );
 
+      console.log('EmailJS Result:', result);
       
-      if (response.status === 200) {
-        toast({
-          title: "TRANSMISSION COMPLETE",
-          description: "Your message has been sent successfully. We'll respond soon.",
-          variant: "default",
-        });
-        
-        // Reset form after successful submission
-        setFormData({
-          name: '',
-          email: '',
-          message: ''
-        });
-      } else {
-        throw new Error('Server responded with an error');
-      }
+      toast({
+        title: "TRANSMISSION COMPLETE",
+        description: "Your message has been sent successfully. We'll respond soon.",
+        variant: "default",
+      });
+      
+      // Reset form after successful submission
+      setFormData({
+        user_name: '',
+        user_email: '',
+        message: ''
+      });
+      
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('EmailJS Error:', error);
+      
+      let errorMessage = "There was an error sending your message. Please try again.";
+      
+      if (error.text) {
+        errorMessage = `Failed to send message: ${error.text}`;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "TRANSMISSION FAILED",
-        description: "There was an error sending your message. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -164,39 +183,39 @@ const Contact = () => {
                   <h3 className="text-2xl font-bold text-white">Direct Transmission</h3>
                 </div>
                 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="name" className="block text-cyan-300 mb-2 text-sm tracking-wide">IDENTIFIER</label>
+                    <label htmlFor="user_name" className="block text-cyan-300 mb-2 text-sm tracking-wide">IDENTIFIER</label>
                     <div className="relative">
                       <User size={18} className="absolute left-3 top-3.5 text-purple-400" />
                       <input
                         type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
+                        id="user_name"
+                        name="user_name"
+                        value={formData.user_name}
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-4 py-3 bg-black/60 border ${errors.name ? 'border-red-500' : 'border-purple-500/30'} rounded-md focus:outline-none focus:border-cyan-400 text-white placeholder-gray-500 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-3 bg-black/60 border ${errors.user_name ? 'border-red-500' : 'border-purple-500/30'} rounded-md focus:outline-none focus:border-cyan-400 text-white placeholder-gray-500 transition-colors`}
                         placeholder="Enter your name"
                       />
                     </div>
-                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                    {errors.user_name && <p className="text-red-500 text-xs mt-1">{errors.user_name}</p>}
                   </div>
                   
                   <div>
-                    <label htmlFor="email" className="block text-cyan-300 mb-2 text-sm tracking-wide">COMM CHANNEL</label>
+                    <label htmlFor="user_email" className="block text-cyan-300 mb-2 text-sm tracking-wide">COMM CHANNEL</label>
                     <div className="relative">
                       <Mail size={18} className="absolute left-3 top-3.5 text-purple-400" />
                       <input
                         type="email" 
-                        id="email"
-                        name="email"
-                        value={formData.email}
+                        id="user_email"
+                        name="user_email"
+                        value={formData.user_email}
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-4 py-3 bg-black/60 border ${errors.email ? 'border-red-500' : 'border-purple-500/30'} rounded-md focus:outline-none focus:border-cyan-400 text-white placeholder-gray-500 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-3 bg-black/60 border ${errors.user_email ? 'border-red-500' : 'border-purple-500/30'} rounded-md focus:outline-none focus:border-cyan-400 text-white placeholder-gray-500 transition-colors`}
                         placeholder="your.email@domain.net"
                       />
                     </div>
-                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                    {errors.user_email && <p className="text-red-500 text-xs mt-1">{errors.user_email}</p>}
                   </div>
                   
                   <div>
