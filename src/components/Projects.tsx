@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ExternalLink, Github, ArrowRight, Code, Zap, Terminal, FileCode2, Coffee } from 'lucide-react';
+import { ExternalLink, Github, ArrowRight, Code, Zap, Terminal, FileCode2 } from 'lucide-react';
 
 interface Project {
   title: string;
@@ -8,76 +8,87 @@ interface Project {
   tags: string[];
   github?: string;
   demo?: string;
+  gradient: string;
+  accentColor: string;
 }
 
 const Projects = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [hoverGlitch, setHoverGlitch] = useState(false);
-  const [glitchText, setGlitchText] = useState('');
-  
-  // Trigger glitch text animation periodically
-  useEffect(() => {
-    const titles = ["PROJECTS", "PORTFOLIO", "SHOWCASE", "CREATIONS"];
-    let interval = setInterval(() => {
-      setGlitchText(titles[Math.floor(Math.random() * titles.length)]);
-      setHoverGlitch(true);
-      setTimeout(() => setHoverGlitch(false), 800);
-    }, 4000);
-    
-    return () => clearInterval(interval);
-  }, []);
-  
- const projects: Project[] = [
-  {
-    title: "HobbyHub - Social Platform for Hobbyists",
-    description: "A full-stack social media platform for hobbyists to share passions, post content, comment, follow others, and explore hobbies. Features dual authentication, media uploads, and admin reporting.",
-    image: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=2070&auto=format&fit=crop", // Social platform vibe
-    tags: ["Node.js", "Express", "MongoDB", "Passport.js", "MVC", "Twilio"],
-    github: "https://github.com/HasibNirjhar07/HobbyHub",
-    demo: "#"
-  },
-  {
-    title: "Lingua Kids - Gamified English Learning",
-    description: "An engaging web app to help children improve English skills through reading, writing, listening, and speaking exercises. Includes streak tracking, leaderboards, and animated UI for kids.",
-    image: "https://lanecove.s3.ap-southeast-2.amazonaws.com/wp-content/uploads/2017/08/04230359/Spanish-for-kids-Sydney-and-Melbourne.jpg", // Child learning theme
-    tags: ["Next.js", "Tailwind CSS", "React", "TypeScript", "Framer Motion", "ML Integration"],
-    github: "https://github.com/HasibNirjhar07/lingua-kids",
-    demo: "#"
-  },
-  {
-    title: "Shahajjo - Real-time Help App",
-    description: "A real-time help app built to connect people in need with volunteers or local helpers. Features live tracking, location-based requests, and a robust backend for scalability.",
-    image: "https://www.ci.seaside.ca.us/ImageRepository/Document?documentID=6088", // Help and support theme
-    tags: ["React Native", "Firebase", "Google Maps API", "Real-Time DB"],
-    github: "https://github.com/hasin023/shahajjo",
-    demo: "#"
-  },
-];
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const ticking = useRef(false);
+  const lastScrollY = useRef(0);
 
+  const projects: Project[] = [
+    {
+      title: "HobbyHub",
+      description: "A full-stack social media platform for hobbyists to share passions, post content, comment, follow others, and explore hobbies. Features dual authentication, media uploads, and admin reporting.",
+      image: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=2070&auto=format&fit=crop",
+      tags: ["Node.js", "Express", "MongoDB", "Passport.js"],
+      github: "https://github.com/HasibNirjhar07/HobbyHub",
+      demo: "#",
+      gradient: "from-cyan-600/40 to-blue-900/80",
+      accentColor: "text-cyan-400"
+    },
+    {
+      title: "Lingua Kids",
+      description: "An engaging web app to help children improve English skills through reading, writing, listening, and speaking exercises. Includes streak tracking, leaderboards, and animated UI for kids.",
+      image: "https://cdn.vectorstock.com/i/500p/01/82/children-studying-in-classroom-vector-6320182.jpg",
+      tags: ["Next.js", "Tailwind CSS", "React", "TypeScript"],
+      github: "https://github.com/HasibNirjhar07/lingua-kids",
+      demo: "#",
+      gradient: "from-purple-600/40 to-indigo-900/80",
+      accentColor: "text-purple-400"
+    },
+    {
+      title: "Shahajjo",
+      description: "A real-time help app built to connect people in need with volunteers or local helpers. Features live tracking, location-based requests, and a robust backend for scalability.",
+      image: "https://lafayette.in.gov/ImageRepository/Document?documentId=15538",
+      tags: ["React Native", "Firebase", "Google Maps API"],
+      github: "https://github.com/hasin023/shahajjo",
+      demo: "#",
+      gradient: "from-emerald-600/40 to-teal-900/80",
+      accentColor: "text-emerald-400"
+    }
+  ];
+
+  // Card styling with responsive adjustments
+  const cardStyle = {
+    height: '65vh',
+    maxHeight: '650px',
+    borderRadius: '24px',
+    transition: 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.3s ease',
+    willChange: 'transform, opacity, box-shadow',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+  };
+
+  // Handle mouse move for 3D tilt effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = (y - centerY) / 50;
+    const rotateY = (centerX - x) / 50;
+    card.style.setProperty('--rotateX', `${rotateX}deg`);
+    card.style.setProperty('--rotateY', `${rotateY}deg`);
+  };
+
+  // Reset tilt on mouse leave
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    card.style.setProperty('--rotateX', '0deg');
+    card.style.setProperty('--rotateY', '0deg');
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('opacity-100');
-          entry.target.classList.remove('opacity-0', 'translate-y-10');
-          
-          // Animate project cards when section comes into view
-          const cards = entry.target.querySelectorAll('.project-card');
-          cards.forEach((card, index) => {
-            setTimeout(() => {
-              card.classList.add('opacity-100', 'translate-x-0');
-              card.classList.remove('opacity-0', 'translate-x-20');
-            }, 200 * index);
-          });
-          
-          // Trigger header glitch effect on view
-          setTimeout(() => {
-            setHoverGlitch(true);
-            setTimeout(() => setHoverGlitch(false), 1000);
-          }, 500);
-        }
+      (entries) => {
+        const [entry] = entries;
+        setIsIntersecting(entry.isIntersecting);
       },
       { threshold: 0.1 }
     );
@@ -86,428 +97,199 @@ const Projects = () => {
       observer.observe(sectionRef.current);
     }
 
+    // Debounced scroll handler
+    let scrollTimeout: NodeJS.Timeout;
+    const handleScroll = () => {
+      if (!ticking.current) {
+        lastScrollY.current = window.scrollY;
+
+        window.requestAnimationFrame(() => {
+          if (!sectionRef.current) return;
+
+          const sectionRect = sectionRef.current.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+          const totalScrollDistance = viewportHeight * 2;
+
+          let progress = 0;
+          if (sectionRect.top <= 0) {
+            progress = Math.min(1, Math.max(0, Math.abs(sectionRect.top) / totalScrollDistance));
+          }
+
+          if (progress >= 0.66) {
+            setActiveCardIndex(2);
+          } else if (progress >= 0.33) {
+            setActiveCardIndex(1);
+          } else {
+            setActiveCardIndex(0);
+          }
+
+          ticking.current = false;
+        });
+
+        ticking.current = true;
+      }
+    };
+
+    window.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(handleScroll, 16); // Debounce to ~60fps
+    }, { passive: true });
+    handleScroll();
+
     return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current);
       }
     };
   }, []);
-  
-  // Cyberpunk glitch text effect component
-  const GlitchText = ({ text, className = "" }) => {
-    return (
-      <div className={`relative inline-block ${className}`}>
-        <span className={`absolute top-0 left-0.5 text-cyan-400 opacity-70 ${hoverGlitch ? 'animate-glitch-1' : ''}`}>{text}</span>
-        <span className={`absolute -top-px -left-px text-fuchsia-500 opacity-70 ${hoverGlitch ? 'animate-glitch-2' : ''}`}>{text}</span>
-        <span className="relative z-10">{text}</span>
-      </div>
-    );
-  };
 
-  // Random component to select a tech icon
-  const TechIcon = ({ tag }) => {
-    switch(tag.toLowerCase()) {
-      case 'python':
-        return <FileCode2 size={14} className="mr-1" />;
-      case 'react':
-      case 'nextjs':
-        return <Code size={14} className="mr-1" />;
-      case 'mongodb':
-        return <Terminal size={14} className="mr-1" />;
-      default:
-        return <Coffee size={14} className="mr-1" />;
-    }
-  };
+  const isFirstCardVisible = isIntersecting;
+  const isSecondCardVisible = activeCardIndex >= 1;
+  const isThirdCardVisible = activeCardIndex >= 2;
 
   return (
-    <section id="projects" className="py-20 bg-ml-dark bg-opacity-90 relative overflow-hidden">
-      {/* Animated cyberpunk grid background */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-10 z-0 animate-grid-shift"></div>
-      
-      {/* Animated neon glow effects */}
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-fuchsia-600 opacity-10 blur-3xl animate-pulse-slow"></div>
-      <div className="absolute bottom-1/3 right-1/4 w-96 h-96 rounded-full bg-cyan-500 opacity-10 blur-3xl animate-float"></div>
-      <div className="absolute top-1/2 right-1/3 w-48 h-48 rounded-full bg-lime-500 opacity-5 blur-3xl animate-float-delayed"></div>
-      
-      {/* Digital rain effect (matrix-like) */}
-      <div className="digital-rain absolute inset-0 opacity-5 pointer-events-none"></div>
-      
-      <div className="section-container relative z-10">
-        <div
-          ref={sectionRef}
-          className="opacity-0 translate-y-10 transition-all duration-700"
-        >
-          <div className="text-center relative mb-16">
-            <div className="cyberpunk-border inline-block p-3 relative mb-4">
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-cyan-400"></div>
-              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-fuchsia-500"></div>
-              
-              <h2 className="text-5xl font-bold mb-2 cyber-font relative inline-block">
-                <span className="text-white">Featured</span>{" "}
-                <GlitchText text={glitchText || "_Projects"} />
-                <span className="text-lime-500 animate-blink ml-1">_</span>
-              </h2>
+    <div ref={sectionRef} className="relative" style={{ height: '300vh' }}>
+      <section
+        className="w-full h-screen py-10 md:py-16 sticky top-0 overflow-hidden bg-gradient-to-br from-slate-900 via-black to-slate-900"
+        id="projects"
+      >
+        {/* Enhanced animated background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-3/4 left-3/4 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl animate-pulse delay-2000"></div>
+        </div>
+
+        <div className="container px-6 lg:px-8 mx-auto h-full flex flex-col relative z-10">
+          <div className="mb-2 md:mb-3">
+            <div className="flex items-center gap-4 mb-2 md:mb-2 pt-8 sm:pt-6 md:pt-4">
+             
             </div>
-            
-            <div className="h-1 w-24 bg-gradient-to-r from-cyan-400 to-fuchsia-500 mx-auto mt-2 relative">
-              {/* Neon highlight effect */}
-              <div className="absolute inset-0 blur-sm bg-gradient-to-r from-cyan-400 to-fuchsia-500 opacity-70"></div>
-            </div>
-            
-            <p className="text-gray-400 mt-4 max-w-2xl mx-auto relative">
-              Some of my recent work combining software development and machine learning
-              <span className="data-line absolute -bottom-2 left-0 h-px w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></span>
-            </p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 md:mb-2 text-white tracking-tight">
+              Featured <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">Projects</span>
+            </h2>
           </div>
-          
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+          <div ref={cardsContainerRef} className="relative flex-1 perspective-1000">
+            {projects.map((project, index) => {
+              const isVisible = index === 0 ? isFirstCardVisible : index === 1 ? isSecondCardVisible : isThirdCardVisible;
+              const translateY = index === 0 ? (isVisible ? 90 : 200) : index === 1 ? (isVisible ? activeCardIndex === 1 ? 55 : 45 : 200) : (isVisible ? activeCardIndex === 2 ? 15 : 0 : 200);
+              const scale = index === 0 ? 0.9 : index === 1 ? 0.95 : 1;
+              const zIndex = 10 + index * 10;
+
+              return (
+                <div
+                  key={project.title}
+                  className={`absolute inset-0 overflow-hidden shadow-2xl card-tilt ${isVisible ? 'animate-card-enter' : ''} ${activeCardIndex === index ? 'animate-scale' : ''}`}
+                  style={{
+                    ...cardStyle,
+                    zIndex,
+                    transform: `translateY(${translateY}px) scale(${scale})`,
+                    opacity: isVisible ? 1 : 0,
+                    pointerEvents: isVisible ? 'auto' : 'none',
+                  }}
+                  onMouseMove={(e) => handleMouseMove(e, index)}
+                  onMouseLeave={handleMouseLeave}
+                  role="region"
+                  aria-label={`Project card: ${project.title}`}
+                >
+                  <div
+                    className={`absolute inset-0 z-0 bg-gradient-to-b ${project.gradient}`}
+                    style={{
+                      backgroundImage: `url('${project.image}')`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundBlendMode: 'overlay',
+                      animation: 'gradientShift 15s ease infinite',
+                    }}
+                  ></div>
+
+                  <div className="absolute top-4 right-4 z-20 flex gap-3">
+                    <div className="inline-flex items-center justify-center px-4 py-2 rounded-full glassmorphism text-white">
+                      <span className="text-sm font-medium">Project 0{index + 1}</span>
+                    </div>
+                    {project.github && (
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-full glassmorphism hover:bg-white/30 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+                        aria-label={`View ${project.title} on GitHub`}
+                      >
+                        <Github size={18} className="text-white" />
+                      </a>
+                    )}
+                    {project.demo && project.demo !== '#' && (
+                      <a
+                        href={project.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-full glassmorphism hover:bg-white/30 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+                        aria-label={`View ${project.title} demo`}
+                      >
+                        <ExternalLink size={18} className="text-white" />
+                      </a>
+                    )}
+                  </div>
+
+                  <div className="relative z-10 p-5 sm:p-6 md:p-8 h-full flex flex-col justify-end">
+                    <div className="max-w-2xl">
+                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold glassmorphism text-white leading-tight mb-4 tracking-tight">
+                        {project.title}
+                      </h3>
+                      <p className="text-gray-200 glassmorphism text-base sm:text-lg mb-6 leading-relaxed">
+                        {project.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mb-6">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-sm px-3 py-1 rounded-full glassmorphism text-white font-mono"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <a
+                        href={project.github || project.demo || '#'}
+                        className={`inline-flex items-center gap-3 text-lg font-semibold ${project.accentColor} hover:bg-gradient-to-r hover:from-${project.accentColor.split('-')[1]}-400 hover:to-${project.accentColor.split('-')[1]}-600 hover:bg-clip-text hover:text-transparent transition-all duration-300 self-start group hover:gap-4`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Explore ${project.title} project`}
+                      >
+                        <Code size={20} className="group-hover:rotate-12 transition-transform duration-300" />
+                        <span>Explore Project</span>
+                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Enhanced Progress Indicators with Tooltips */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-40">
             {projects.map((project, index) => (
               <div
-                key={project.title}
-                className="project-card opacity-0 translate-x-20 transition-all duration-700 ease-out relative group"
-                onMouseEnter={() => setActiveIndex(index)}
-                onMouseLeave={() => setActiveIndex(null)}
-              >
-                {/* Enhanced card border with animated neon effect */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-500 to-fuchsia-500 opacity-70 p-0.5 z-0 transition-opacity duration-300 group-hover:animate-pulse group-hover:opacity-100"></div>
-                
-                {/* Digital circuit lines effect */}
-                <div className={`absolute -inset-px z-0 pointer-events-none transition-opacity duration-300 ${activeIndex === index ? 'opacity-100' : 'opacity-0'}`}>
-                  <div className="absolute top-0 left-1/4 w-px h-full bg-cyan-400 animate-circuit-pulse"></div>
-                  <div className="absolute top-1/3 left-0 w-full h-px bg-fuchsia-500 animate-circuit-pulse-delayed"></div>
-                  <div className="absolute bottom-1/4 right-0 w-px h-1/3 bg-lime-400 animate-circuit-pulse"></div>
-                  <div className="absolute top-2/3 right-1/4 w-1/3 h-px bg-cyan-400 animate-circuit-pulse-delayed"></div>
-                </div>
-                
-                <div className="relative z-10 bg-gray-900 bg-opacity-90 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-800 h-full flex flex-col">
-                  {/* Improved scanline effect overlay */}
-                  <div className="absolute inset-0 bg-scanline opacity-10 pointer-events-none z-10 animate-scanline"></div>
-                  
-                  {/* Glitch effect on hover */}
-                  <div className={`absolute inset-0 z-20 pointer-events-none transition-opacity duration-200 overflow-hidden ${activeIndex === index ? 'opacity-30' : 'opacity-0'}`}>
-                    <div className="absolute inset-0 bg-glitch opacity-30 animate-glitch-background mix-blend-overlay"></div>
-                  </div>
-                  
-                  <div className="relative h-48 overflow-hidden">
-                    <img 
-                      src={project.image} 
-                      alt={project.title} 
-                      className={`w-full h-full object-cover transition-all duration-500 ${activeIndex === index ? 'scale-110 saturate-150' : 'scale-100'}`}
-                    />
-                    
-                    {/* Enhanced color overlay with animations */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
-                    <div className={`absolute inset-0 bg-gradient-to-r from-cyan-900/30 to-fuchsia-900/30 mix-blend-color transition-opacity duration-300 ${activeIndex === index ? 'opacity-100' : 'opacity-70'}`}></div>
-                    
-                    {/* Digital noise effect */}
-                    <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay"></div>
-                    
-                    {/* Data corruption effect on hover */}
-                    <div className={`absolute inset-0 data-corruption opacity-0 group-hover:opacity-20 transition-opacity duration-300 mix-blend-overlay`}></div>
-                    
-                    <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between items-center">
-                      <h3 className="text-xl font-bold text-white flex items-center group-hover:text-cyan-300 transition-colors">
-                        <span className="text-cyan-400 mr-2">
-                          <Zap size={18} className="animate-pulse" />
-                        </span>
-                        {activeIndex === index ? (
-                          <span className="glitch-text" data-text={project.title}>{project.title}</span>
-                        ) : project.title}
-                      </h3>
-                      <div className="flex space-x-2">
-                        {project.github && (
-                          <a 
-                            href={project.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-8 h-8 rounded-full bg-black/60 border border-cyan-500 hover:bg-cyan-500/20 flex items-center justify-center transition-all transform hover:scale-110 hover:rotate-6"
-                            aria-label="GitHub Repository"
-                          >
-                            <Github size={16} className="text-white" />
-                          </a>
-                        )}
-                        {project.demo && (
-                          <a 
-                            href={project.demo}
-                            target="_blank"
-                            rel="noopener noreferrer" 
-                            className="w-8 h-8 rounded-full bg-black/60 border border-fuchsia-500 hover:bg-fuchsia-500/20 flex items-center justify-center transition-all transform hover:scale-110 hover:-rotate-6"
-                            aria-label="Live Demo"
-                          >
-                            <ExternalLink size={16} className="text-white" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6 border-t border-gray-800 flex-1 flex flex-col">
-                    <p className="text-gray-300 mb-4">{project.description}</p>
-                    <div className="flex flex-wrap gap-2 mb-6 mt-auto">
-                      {project.tags.map((tag) => (
-                        <span 
-                          key={tag} 
-                          className="text-xs px-3 py-1 rounded-full border border-cyan-400 text-cyan-400 bg-cyan-900/20 font-mono flex items-center hover:bg-cyan-800/30 transition-colors group-hover:animate-tag-pulse"
-                        >
-                          <TechIcon tag={tag} />
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <a 
-                      href={project.demo || project.github || '#'} 
-                      className="flex items-center text-fuchsia-400 hover:text-fuchsia-300 transition-colors font-medium mt-auto group/btn"
-                    >
-                      <Code size={16} className="mr-2" />
-                      <span>View Project</span>
-                      <ArrowRight size={16} className="ml-2 group-hover/btn:translate-x-2 transition-transform" />
-                    </a>
-                  </div>
-                </div>
-              </div>
+                key={index}
+                className={`w-3 h-3 rounded-full border-2 transition-all duration-300 tooltip ${
+                  activeCardIndex === index
+                    ? `bg-${project.accentColor.split('-')[1]}-400 border-${project.accentColor.split('-')[1]}-400 shadow-lg shadow-${project.accentColor.split('-')[1]}-400/50 scale-125`
+                    : 'border-gray-400 bg-transparent'
+                }`}
+                data-tooltip={project.title}
+                role="button"
+                aria-label={`Go to ${project.title}`}
+                onClick={() => setActiveCardIndex(index)}
+              ></div>
             ))}
           </div>
-          
-          <div className="flex justify-center mt-16">
-            <a 
-              href="https://github.com/HasibNirjhar07?tab=repositories" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative group"
-              onMouseEnter={() => {
-                setHoverGlitch(true);
-                setTimeout(() => setHoverGlitch(false), 800);
-              }}
-            >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-fuchsia-500 rounded-md blur opacity-75 group-hover:opacity-100 transition duration-300 group-hover:duration-200 animate-pulse"></div>
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-lime-500 to-cyan-500 rounded-md blur opacity-0 group-hover:opacity-50 transition duration-300 group-hover:animate-ping"></div>
-              <button className="relative px-8 py-3 bg-black rounded-md text-white font-mono border border-cyan-500 flex items-center space-x-2 group-hover:bg-gray-900 transition-all">
-                <span className="text-glitch" data-text="VIEW_ALL_PROJECTS">VIEW_ALL_PROJECTS</span>
-                <Github className="inline-block ml-2 group-hover:rotate-12 transition-transform" size={16} />
-              </button>
-            </a>
-          </div>
         </div>
-      </div>
-      
-      {/* CSS for custom animations and effects */}
-      <style jsx>{`
-        @keyframes glitch-1 {
-          0% { transform: translate(0); }
-          20% { transform: translate(-3px, 2px); }
-          40% { transform: translate(-3px, -2px); }
-          60% { transform: translate(3px, 2px); }
-          80% { transform: translate(3px, -2px); }
-          100% { transform: translate(0); }
-        }
-        
-        @keyframes glitch-2 {
-          0% { transform: translate(0); }
-          20% { transform: translate(3px, -2px); }
-          40% { transform: translate(3px, 2px); }
-          60% { transform: translate(-3px, -2px); }
-          80% { transform: translate(-3px, 2px); }
-          100% { transform: translate(0); }
-        }
-        
-        @keyframes scanline {
-          0% { background-position: 0 0; }
-          100% { background-position: 0 100%; }
-        }
-        
-        @keyframes circuit-pulse {
-          0%, 100% { opacity: 0.7; }
-          50% { opacity: 0.3; }
-        }
-        
-        @keyframes circuit-pulse-delayed {
-          0%, 100% { opacity: 0.5; }
-          50% { opacity: 0.2; }
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-20px); }
-        }
-        
-        @keyframes float-delayed {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          50% { transform: translateY(-15px) translateX(15px); }
-        }
-        
-        @keyframes grid-shift {
-          0%, 100% { background-position: 0 0; }
-          50% { background-position: 20px 20px; }
-        }
-        
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-        
-        @keyframes tag-pulse {
-          0%, 100% { border-color: rgba(34, 211, 238, 1); }
-          50% { border-color: rgba(192, 38, 211, 1); }
-        }
-        
-        .cyber-font {
-          letter-spacing: 1px;
-          font-family: monospace, sans-serif;
-          text-shadow: 0 0 5px rgba(56, 239, 125, 0.4);
-        }
-        
-        .glitch-text {
-          position: relative;
-          display: inline-block;
-        }
-        
-        .glitch-text::before,
-        .glitch-text::after {
-          content: attr(data-text);
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-        }
-        
-        .glitch-text::before {
-          left: -2px;
-          text-shadow: 2px 0 #ff00ea;
-          animation: glitch-1 0.3s linear infinite;
-          animation-play-state: paused;
-        }
-        
-        .glitch-text::after {
-          left: 2px;
-          text-shadow: -2px 0 #00d9ff;
-          animation: glitch-2 0.3s linear infinite;
-          animation-play-state: paused;
-        }
-        
-        .group:hover .glitch-text::before,
-        .group:hover .glitch-text::after {
-          animation-play-state: running;
-        }
-        
-        .text-glitch {
-          position: relative;
-          display: inline-block;
-        }
-        
-        .text-glitch::before,
-        .text-glitch::after {
-          content: attr(data-text);
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          opacity: 0;
-          transition: opacity 0.2s;
-        }
-        
-        .text-glitch::before {
-          left: -2px;
-          text-shadow: 2px 0 #ff00ea;
-        }
-        
-        .text-glitch::after {
-          left: 2px;
-          text-shadow: -2px 0 #00d9ff;
-        }
-        
-        .group:hover .text-glitch::before,
-        .group:hover .text-glitch::after {
-          opacity: 0.7;
-          animation: glitch-1 0.3s linear infinite;
-        }
-        
-        .animate-blink {
-          animation: blink 1s infinite;
-        }
-        
-        .animate-pulse-slow {
-          animation: pulse 4s infinite;
-        }
-        
-        .animate-float {
-          animation: float 8s ease-in-out infinite;
-        }
-        
-        .animate-float-delayed {
-          animation: float-delayed 10s ease-in-out infinite;
-        }
-        
-        .animate-circuit-pulse {
-          animation: circuit-pulse 2s infinite;
-        }
-        
-        .animate-circuit-pulse-delayed {
-          animation: circuit-pulse-delayed 3s infinite;
-        }
-        
-        .animate-tag-pulse {
-          animation: tag-pulse 2s ease-in-out infinite;
-        }
-        
-        .animate-glitch-background {
-          animation: glitch-1 0.2s linear infinite;
-        }
-        
-        .animate-scanline {
-          animation: scanline 8s linear infinite;
-        }
-        
-        .animate-grid-shift {
-          animation: grid-shift 20s linear infinite;
-        }
-        
-        .bg-grid-pattern {
-          background-image: 
-            linear-gradient(to right, #0f162b 1px, transparent 1px),
-            linear-gradient(to bottom, #0f162b 1px, transparent 1px);
-          background-size: 20px 20px;
-        }
-        
-        .bg-scanline {
-          background: repeating-linear-gradient(
-            to bottom,
-            transparent 0%,
-            rgba(0, 0, 0, 0.05) 0.5%,
-            transparent 1%
-          );
-          background-size: 100% 4px;
-        }
-        
-        .bg-glitch {
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-        
-        .bg-noise {
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-        
-        .data-corruption {
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.1' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-        
-        .data-line {
-          animation: circuit-pulse 4s infinite;
-        }
-        
-        .digital-rain {
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.1' numOctaves='3' result='noise'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E");
-          background-size: cover;
-          mix-blend-mode: screen;
-        }
-        
-        .cyberpunk-border {
-          position: relative;
-          padding: 1rem;
-        }
-      `}</style>
-    </section>
+      </section>
+    </div>
   );
 };
 
