@@ -14,6 +14,7 @@ import {
   Pizza,
   Lock,
 } from "lucide-react";
+import ElectricBorder from "./ElectricBorder";
 
 const About = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -247,364 +248,6 @@ const About = () => {
             CONNECTION SECURE
           </div>
         </div>
-
-        <style jsx>{`
-          @keyframes pulse {
-            0% {
-              opacity: 0.6;
-            }
-            50% {
-              opacity: 1;
-            }
-            100% {
-              opacity: 0.6;
-            }
-          }
-
-          @keyframes pulseSlow {
-            0% {
-              opacity: 0.5;
-              transform: scale(0.8);
-            }
-            50% {
-              opacity: 1;
-              transform: scale(1.2);
-            }
-            100% {
-              opacity: 0.5;
-              transform: scale(0.8);
-            }
-          }
-
-          @keyframes scanline {
-            0% {
-              transform: translateY(-100%);
-            }
-            100% {
-              transform: translateY(100%);
-            }
-          }
-
-          @keyframes scanlineHorizontal {
-            0% {
-              transform: translateX(-100%);
-            }
-            100% {
-              transform: translateX(100%);
-            }
-          }
-
-          @keyframes typing {
-            from {
-              width: 0;
-            }
-            to {
-              width: 100%;
-            }
-          }
-
-          @keyframes flicker {
-            0% {
-              opacity: 1;
-            }
-            8% {
-              opacity: 0.8;
-            }
-            10% {
-              opacity: 1;
-            }
-            20% {
-              opacity: 1;
-            }
-            20.5% {
-              opacity: 0.5;
-            }
-            21% {
-              opacity: 1;
-            }
-            60% {
-              opacity: 1;
-            }
-            60.5% {
-              opacity: 0.2;
-            }
-            61% {
-              opacity: 1;
-            }
-            90% {
-              opacity: 1;
-            }
-            95% {
-              opacity: 0.8;
-            }
-            100% {
-              opacity: 1;
-            }
-          }
-
-          @keyframes dataStream {
-            0% {
-              transform: translateY(-100%);
-            }
-            100% {
-              transform: translateY(100%);
-            }
-          }
-
-          @keyframes blink {
-            0%,
-            49% {
-              opacity: 0;
-            }
-            50%,
-            100% {
-              opacity: 1;
-            }
-          }
-
-          @keyframes noise {
-            0%,
-            100% {
-              background-position: 0 0;
-            }
-            10% {
-              background-position: -5% -10%;
-            }
-            20% {
-              background-position: -15% 5%;
-            }
-            30% {
-              background-position: 7% -25%;
-            }
-            40% {
-              background-position: 20% 25%;
-            }
-            50% {
-              background-position: -25% 10%;
-            }
-            60% {
-              background-position: 15% 5%;
-            }
-            70% {
-              background-position: 0% 15%;
-            }
-            80% {
-              background-position: 25% 35%;
-            }
-            90% {
-              background-position: -10% 10%;
-            }
-          }
-
-          .pulse-glow {
-            animation: pulse 1.5s infinite;
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.7);
-          }
-
-          .pulse-slow {
-            animation: pulseSlow 2.5s infinite;
-          }
-
-          .glow-overlay {
-            box-shadow: 0 0 10px 2px rgba(6, 182, 212, 0.7) inset;
-          }
-
-          .typing-animation {
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 2px solid #22d3ee;
-            animation: typing 6s steps(60),
-              flicker 0.75s step-end infinite alternate;
-          }
-
-          .flicker-text {
-            animation: flicker 3s infinite;
-          }
-
-          .matrix-bg {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                rgba(0, 20, 0, 0.5),
-                rgba(0, 20, 0, 0.5)
-              ),
-              repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 1px,
-                rgba(0, 255, 0, 0.1) 1px,
-                rgba(0, 255, 0, 0.1) 2px
-              );
-            overflow: hidden;
-          }
-
-          .grid-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                90deg,
-                rgba(6, 182, 212, 0.03) 1px,
-                transparent 1px
-              ),
-              linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
-          }
-
-          .scanline {
-            height: 2px;
-            width: 100%;
-            background-color: rgba(6, 182, 212, 0.5);
-            position: absolute;
-            animation: scanline 2s linear infinite;
-          }
-
-          .scanner-line {
-            height: 2px;
-            width: 100%;
-            background: linear-gradient(
-              to right,
-              transparent,
-              rgba(6, 182, 212, 0.8),
-              transparent
-            );
-            opacity: 0.6;
-            animation: scanline 4s linear infinite;
-          }
-
-          .scanner-line-secondary {
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(
-              to bottom,
-              transparent,
-              rgba(6, 182, 212, 0.5),
-              transparent
-            );
-            opacity: 0.3;
-            animation: scanlineHorizontal 7s linear infinite;
-          }
-
-          .data-stream-container {
-            height: 40px;
-            overflow: hidden;
-            background-color: rgba(2, 20, 20, 0.5);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            position: relative;
-          }
-
-          .data-stream {
-            position: absolute;
-            height: 300%;
-            width: 100%;
-            top: -100%;
-            background: repeating-linear-gradient(
-              0deg,
-              rgba(6, 182, 212, 0.15) 0px,
-              rgba(6, 182, 212, 0.15) 1px,
-              transparent 1px,
-              transparent 5px
-            );
-            animation: dataStream 8s linear infinite;
-          }
-
-          .glitch-text {
-            position: relative;
-            text-shadow: 0 0 5px rgba(6, 182, 212, 0.8);
-          }
-
-          .glitch-text:before,
-          .glitch-text:after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-          }
-
-          .glitch-text:before {
-            left: 2px;
-            text-shadow: -2px 0 #ff00ff;
-            animation: glitch-animation 1s infinite linear alternate-reverse;
-          }
-
-          .glitch-text:after {
-            left: -2px;
-            text-shadow: 2px 0 #00ffff;
-            animation: glitch-animation 2s infinite linear alternate-reverse;
-          }
-
-          .blink-led {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 4px;
-            height: 4px;
-            background-color: #00ffff;
-            border-radius: 50%;
-            animation: blink 1s infinite;
-          }
-
-          .cursor-blink {
-            animation: blink 1s infinite;
-          }
-
-          .terminal-text {
-            height: 80px;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
-          }
-
-          .digital-noise {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            animation: noise 0.5s infinite;
-            pointer-events: none;
-          }
-
-          @keyframes glitch-animation {
-            0% {
-              clip-path: inset(30% 0 70% 0);
-              opacity: 0;
-            }
-            20% {
-              clip-path: inset(10% 0 90% 0);
-              opacity: 0;
-            }
-            41% {
-              clip-path: inset(40% 0 60% 0);
-              opacity: 0.8;
-            }
-            42% {
-              clip-path: inset(40% 0 60% 0);
-              opacity: 0;
-            }
-            45% {
-              clip-path: inset(80% 0 20% 0);
-              opacity: 1;
-            }
-            61% {
-              clip-path: inset(20% 0 80% 0);
-              opacity: 0;
-            }
-            62% {
-              clip-path: inset(60% 0 40% 0);
-              opacity: 0.5;
-            }
-            70% {
-              clip-path: inset(10% 0 90% 0);
-              opacity: 0;
-            }
-            100% {
-              clip-path: inset(20% 0 80% 0);
-              opacity: 0;
-            }
-          }
-        `}</style>
       </div>
     );
   }
@@ -736,7 +379,8 @@ const About = () => {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
                 {/* Character Display - 5 columns */}
                 <div className="lg:col-span-5">
-                  <div className="game-card character-card h-full p-6 rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/40 border border-green-500/30 shadow-[0_0_15px_rgba(0,255,155,0.2)] group">
+                  <ElectricBorder color="#22c55e" className="h-full">
+                    <div className="game-card character-card h-full p-6 rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/40 group">
                     <div className="flex items-center mb-4">
                       <div className="w-1 h-6 bg-green-500 rounded mr-3"></div>
                       <h3 className="text-xl font-bold text-white">
@@ -831,22 +475,24 @@ const About = () => {
                           embarking on quests to master machine learning and
                           build innovative web applications.
                         </p>
-                      </div>
                     </div>
                   </div>
+                </div>
+              </ElectricBorder>
                 </div>
 
                 {/* Primary & Secondary Stats - 7 columns */}
                 <div className="lg:col-span-7 flex flex-col space-y-6">
                   {/* Primary Stats */}
 
-                  <div className="game-card p-6 rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/40 border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.2)] group">
-  <div className="flex items-center mb-6">
-    <div className="w-1 h-6 bg-blue-500 rounded mr-3"></div>
-    <h3 className="text-xl font-bold text-white">
-      PRIMARY STATS
-    </h3>
-  </div>
+                  <ElectricBorder color="#3b82f6">
+                    <div className="game-card p-6 rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/40 group">
+                      <div className="flex items-center mb-6">
+                        <div className="w-1 h-6 bg-blue-500 rounded mr-3"></div>
+                        <h3 className="text-xl font-bold text-white">
+                          PRIMARY STATS
+                        </h3>
+                      </div>
 
   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
     {[
@@ -886,18 +532,20 @@ const About = () => {
             <p className="text-white font-medium">
               {stat.value}
             </p>
+            </div>
           </div>
         </div>
+      ))}
       </div>
-    ))}
-  </div>
-</div>
+    </div>
+    </ElectricBorder>
 
                
                  
 
-                  {/* Secondary Stats */}
-                  <div className="game-card p-6 rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/40 border border-purple-500/30 shadow-[0_0_15px_rgba(139,92,246,0.2)] flex-1 group">
+                    {/* Secondary Stats */}
+                    <ElectricBorder color="#a855f7" className="flex-1">
+                      <div className="game-card p-6 rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/40 flex-1 group">
                     <div className="flex items-center mb-6">
                       <div className="w-1 h-6 bg-purple-500 rounded mr-3"></div>
                       <h3 className="text-xl font-bold text-white">
@@ -945,6 +593,7 @@ const About = () => {
                       </div>
                     </div>
                   </div>
+                  </ElectricBorder>
                 </div>
               </div>
             )}
@@ -952,7 +601,8 @@ const About = () => {
             {/* SKILLS Tab */}
             {activeTab === "skills" && (
               <div className="skills-section animate-fade-in">
-                <div className="game-card p-8 rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/40 border border-green-500/30 shadow-[0_0_15px_rgba(0,255,155,0.2)]">
+                <ElectricBorder color="#22c55e">
+                  <div className="game-card p-8 rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/40">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Skill Bars */}
                     <div>
@@ -1230,13 +880,15 @@ const About = () => {
                     </div>
                   </div>
                 </div>
+              </ElectricBorder>
               </div>
             )}
 
             {/* ACHIEVEMENTS Tab */}
             {activeTab === "achievements" && (
               <div className="achievements-section animate-fade-in">
-                <div className="game-card p-8 rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/40 border border-yellow-500/30 shadow-[0_0_15px_rgba(234,179,8,0.2)]">
+                <ElectricBorder color="#eab308">
+                  <div className="game-card p-8 rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/40">
                   <div className="mb-8">
                     <div className="flex items-center mb-6">
                       <div className="w-1 h-6 bg-yellow-500 rounded mr-3"></div>
@@ -1319,6 +971,7 @@ const About = () => {
                     </div>
                   </div>
                 </div>
+              </ElectricBorder>
               </div>
             )}
           </div>
@@ -1329,206 +982,7 @@ const About = () => {
       <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
       <div className="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-black to-transparent pointer-events-none"></div>
 
-      <style jsx>{`
-        .game-container {
-          perspective: 1000px;
-        }
 
-        .grid-overlay {
-          background-image: linear-gradient(
-              to right,
-              rgba(0, 255, 155, 0.05) 1px,
-              transparent 1px
-            ),
-            linear-gradient(
-              to bottom,
-              rgba(0, 255, 155, 0.05) 1px,
-              transparent 1px
-            );
-          background-size: 40px 40px;
-        }
-
-        .typing-text {
-          overflow: hidden;
-        }
-
-        @keyframes pulse-opacity {
-          0%,
-          100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.6;
-          }
-        }
-
-        .pulse-opacity {
-          animation: pulse-opacity 2s infinite;
-        }
-
-        .glitch {
-          position: relative;
-          animation: glitch 0.3s infinite;
-        }
-
-        .glitch:before,
-        .glitch:after {
-          content: attr(data-text);
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-        }
-
-        .glitch:before {
-          left: 2px;
-          text-shadow: -1px 0 red;
-          animation: glitch-anim 2s infinite linear alternate-reverse;
-        }
-
-        .glitch:after {
-          left: -2px;
-          text-shadow: 2px 0 blue;
-          animation: glitch-anim2 1s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim {
-          0% {
-            clip-path: inset(40% 0 61% 0);
-          }
-          20% {
-            clip-path: inset(92% 0 1% 0);
-          }
-          40% {
-            clip-path: inset(43% 0 1% 0);
-          }
-          60% {
-            clip-path: inset(25% 0 58% 0);
-          }
-          80% {
-            clip-path: inset(54% 0 7% 0);
-          }
-          100% {
-            clip-path: inset(58% 0 43% 0);
-          }
-        }
-
-        @keyframes glitch-anim2 {
-          0% {
-            clip-path: inset(25% 0 58% 0);
-          }
-          20% {
-            clip-path: inset(54% 0 7% 0);
-          }
-          40% {
-            clip-path: inset(58% 0 43% 0);
-          }
-          60% {
-            clip-path: inset(40% 0 61% 0);
-          }
-          80% {
-            clip-path: inset(92% 0 1% 0);
-          }
-          100% {
-            clip-path: inset(43% 0 1% 0);
-          }
-        }
-
-        .animate-blink {
-          animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-          0%,
-          100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0;
-          }
-        }
-
-        .terminal-window {
-          background-color: rgba(30, 30, 30, 0.9);
-          border-radius: 6px;
-          border: 1px solid rgba(0, 255, 155, 0.3);
-          box-shadow: 0 0 20px rgba(0, 255, 155, 0.2);
-        }
-
-        .particle {
-          animation: float linear infinite;
-        }
-
-        @keyframes float {
-          0% {
-            transform: translateY(0) translateX(0);
-            opacity: 0;
-          }
-          10% {
-            opacity: 0.3;
-          }
-          90% {
-            opacity: 0.3;
-          }
-          100% {
-            transform: translateY(-100vh) translateX(20px);
-            opacity: 0;
-          }
-        }
-
-        .skill-node {
-          fill: #1f2937;
-          stroke: #6b7280;
-          stroke-width: 2;
-          transition: all 0.3s ease;
-        }
-
-        .skill-node.active {
-          fill: #064e3b;
-          stroke: #34d399;
-          filter: drop-shadow(0 0 3px rgba(52, 211, 153, 0.5));
-        }
-
-        .skill-node.locked {
-          fill: #1f2937;
-          stroke: #4b5563;
-        }
-
-        .skill-line {
-          stroke: #4b5563;
-          stroke-width: 3;
-          stroke-dasharray: 5;
-        }
-
-        .skill-line.active {
-          stroke: #34d399;
-          stroke-dasharray: none;
-          filter: drop-shadow(0 0 1px rgba(52, 211, 153, 0.5));
-        }
-
-        .skill-text {
-          fill: #d1d5db;
-          font-size: 10px;
-          font-family: monospace;
-          pointer-events: none;
-        }
-
-        .animate-fade-in {
-          animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </section>
   );
 };

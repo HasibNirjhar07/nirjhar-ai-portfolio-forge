@@ -62,6 +62,37 @@ const Hero: React.FC = () => {
   const heroRef = useRef<HTMLElement | null>(null);
   const [scrollY, setScrollY] = useState<number>(0);
   const [typingComplete, setTypingComplete] = useState<boolean>(false);
+  
+  // Main title typewriter state
+  const [typingText, setTypingText] = useState("");
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isDeletingPhrase, setIsDeletingPhrase] = useState(false);
+  const phrases = ["Hasibul Islam Nirjhar", "A Software Engineer", "An AI Enthusiast"];
+
+  useEffect(() => {
+    const currentPhrase = phrases[phraseIndex % phrases.length];
+    const typingSpeed = isDeletingPhrase ? 100 : 150;
+    const pauseTime = 2000;
+
+    const timeout = setTimeout(() => {
+      if (!isDeletingPhrase) {
+        if (typingText.length < currentPhrase.length) {
+          setTypingText(currentPhrase.slice(0, typingText.length + 1));
+        } else {
+          setTimeout(() => setIsDeletingPhrase(true), pauseTime);
+        }
+      } else {
+        if (typingText.length > 0) {
+          setTypingText(currentPhrase.slice(0, typingText.length - 1));
+        } else {
+          setIsDeletingPhrase(false);
+          setPhraseIndex((prev) => prev + 1);
+        }
+      }
+    }, typingSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [typingText, isDeletingPhrase, phraseIndex]);
 
   // Typing animation state
   const [displayedCode, setDisplayedCode] = useState<string>("");
@@ -250,10 +281,7 @@ const Hero: React.FC = () => {
                   opacity: 0,
                 }}
               >
-                <div className="inline-flex items-center space-x-2 mt-4 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm border border-white/10">
-                  <Brain size={18} className="text-ml-accent" />
-                  <span className="text-white/80">AI & ML Enthusiast</span>
-                </div>
+            
               </div>
 
               <h1
@@ -265,11 +293,12 @@ const Hero: React.FC = () => {
                   opacity: 0,
                 }}
               >
-                Hi, I'm{" "}
-                <span className="relative">
+                <span className="block text-white mb-2">Hi, I'm</span>
+                <span className="relative inline-block min-w-[280px] md:min-w-[400px] h-[1.2em]">
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-ml-primary to-ml-accent animate-gradient-animation">
-                    Hasibul Islam Nirjhar
+                    {typingText}
                   </span>
+                  <span className="animate-cursor text-ml-primary ml-1">|</span>
                   <span className="absolute -bottom-1 md:-bottom-2 left-0 w-full h-1 md:h-2 bg-gradient-to-r from-ml-primary to-ml-accent rounded opacity-70"></span>
                 </span>
               </h1>
@@ -516,90 +545,7 @@ const Hero: React.FC = () => {
         </div>
       </div>
 
-      {/* Global animation styles */}
-      <style jsx global>{`
-        @keyframes fadeSlideUp {
-          0% {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
 
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        @keyframes floatAnimation {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-
-        @keyframes orbit {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes typing-cursor {
-          0%,
-          100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0;
-          }
-        }
-
-        .animate-float-slow {
-          animation: floatAnimation 8s ease-in-out infinite;
-        }
-
-        .animate-spin-slow {
-          animation: spin 8s linear infinite;
-        }
-
-        .animate-spin-slow-reverse {
-          animation: spin 8s linear infinite reverse;
-        }
-
-        .animate-orbit {
-          animation: orbit 8s linear infinite;
-        }
-
-        .animate-gradient-animation {
-          background-size: 200% 200%;
-          animation: gradientAnimation 4s ease infinite;
-        }
-
-        @keyframes gradientAnimation {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-      `}</style>
     </section>
   );
 };
