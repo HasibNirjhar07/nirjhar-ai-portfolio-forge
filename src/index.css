@@ -28,18 +28,61 @@
     --radius: 0.75rem;
   }
 
+  /* Light Mode Variables */
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 262 83% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 262 83% 58%;
+
+    /* Custom light mode colors */
+    --ml-dark: 0 0% 98%;
+    --ml-primary-light: 262 83% 65%;
+    --ml-secondary-light: 199 89% 55%;
+    --ml-accent-light: 262 83% 70%;
+  }
+
   * {
     @apply border-border;
     scroll-behavior: smooth;
   }
-  
+
   body {
-    @apply bg-ml-dark text-foreground antialiased;
+    @apply bg-background text-foreground antialiased;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
-  
+
+  /* Light mode specific body styles */
+  .light body {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+  }
+
   ::selection {
-    @apply bg-ml-primary/30 text-white;
+    @apply bg-ml-primary/30;
+  }
+
+  .dark ::selection {
+    @apply text-white;
+  }
+
+  .light ::selection {
+    @apply text-gray-900;
   }
 }
 
@@ -47,19 +90,19 @@
   .btn-primary {
     @apply px-6 py-3 rounded-lg bg-ml-primary text-white hover:bg-ml-primary/90 transition-all duration-300;
   }
-  
+
   .btn-outline {
     @apply px-6 py-3 rounded-lg border-2 border-ml-primary text-ml-primary hover:bg-ml-primary/10 transition-all duration-300;
   }
-  
+
   .section-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24;
   }
-  
+
   .heading {
     @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white;
   }
-  
+
   .subheading {
     @apply text-xl md:text-2xl font-medium mb-8 text-ml-secondary/80;
   }
@@ -67,18 +110,417 @@
   .card {
     @apply bg-gradient-to-br from-secondary/50 to-secondary/10 backdrop-blur-md border border-white/10 rounded-xl p-6 shadow-lg;
   }
-  
+
   .text-gradient {
     @apply bg-gradient-to-r from-ml-primary via-ml-secondary to-ml-accent bg-clip-text text-transparent;
   }
-  
+
   .glass-effect {
     @apply bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg;
   }
-  
+
   .animated-underline {
     @apply relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-ml-accent after:transition-all after:duration-300 hover:after:w-full;
   }
+}
+
+/* ===== LIGHT MODE - CLEAN PROFESSIONAL DESIGN ===== */
+
+/* Base light mode background */
+.light {
+  background-color: #ffffff !important;
+}
+
+.light body {
+  background-color: #ffffff !important;
+}
+
+/* ===== RESET ALL DARK BACKGROUNDS TO WHITE ===== */
+.light .bg-ml-dark,
+.light .bg-black,
+.light .bg-slate-950,
+.light .bg-slate-900,
+.light .bg-gray-900,
+.light .bg-gray-800,
+.light .bg-gray-900\/50,
+.light .bg-gray-900\/80,
+.light .bg-gray-800\/50,
+.light .bg-slate-900\/50 {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+/* ===== TEXT COLORS ===== */
+.light .text-white {
+  color: #0f172a !important;
+}
+
+.light .text-white\/40,
+.light .text-white\/50,
+.light .text-white\/60,
+.light .text-white\/70,
+.light .text-white\/80 {
+  color: #475569 !important;
+}
+
+.light .text-gray-300,
+.light .text-gray-400,
+.light .text-gray-500,
+.light .text-slate-300,
+.light .text-slate-400 {
+  color: #64748b !important;
+}
+
+/* ===== HERO SECTION ===== */
+.light #hero {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+.light #hero canvas {
+  opacity: 0.5 !important;
+  filter: hue-rotate(-20deg) saturate(1.4) !important;
+}
+
+/* Keep code card dark for contrast */
+.light .coding-animation,
+.light #hero .bg-\[rgba\(16\,20\,30\,0\.8\)\] {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Show hero background blobs with blue theme - HIDDEN NOW AS REQUESTED */
+.light #hero .blur-3xl,
+.light #hero .blur-2xl {
+  display: none !important;
+}
+
+/* ===== ABOUT SECTION ===== */
+.light #about {
+  background-color: #f8fafc !important;
+  background-image: none !important;
+}
+
+/* Hide game frame borders in light mode */
+.light #about > .absolute.pointer-events-none {
+  display: none !important;
+}
+
+/* Hide grid overlay */
+.light .grid-overlay {
+  display: none !important;
+}
+
+/* Hide floating particles */
+.light #about .particle {
+  display: none !important;
+}
+
+/* Hide glow effects */
+.light #about .blur-3xl,
+.light #about .blur-2xl {
+  display: none !important;
+}
+
+.light .game-card {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+  background-image: none !important;
+}
+
+/* Keep terminal dark */
+.light .terminal-window {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+.light .border-gray-700,
+.light .border-gray-800 {
+  border-color: #e2e8f0 !important;
+}
+
+.light .bg-gray-800\/50,
+.light .bg-gray-900\/30 {
+  background-color: #f8fafc !important;
+}
+
+/* Tab buttons */
+.light .tab-button {
+  color: #64748b !important;
+}
+
+.light .tab-button.active,
+.light .tab-button:hover {
+  color: #0f172a !important;
+}
+
+/* ===== SKILLS SECTION ===== */
+.light #skills {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+.light #skills .bg-grid {
+  display: none !important;
+}
+
+.light #skills .blur-3xl,
+.light #skills .blur-2xl {
+  display: none !important;
+}
+
+.light .bg-\[\#1E123A\],
+.light .tech-icon {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.light .tech-icon:hover {
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2) !important;
+  border-color: #a78bfa !important;
+}
+
+.light .tech-tooltip {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.light .glow-text {
+  text-shadow: none !important;
+}
+
+.light .text-purple-400 {
+  color: #7c3aed !important;
+}
+
+/* ===== PROJECTS SECTION ===== */
+.light #projects {
+  background-color: #f8fafc !important;
+  background-image: none !important;
+}
+
+/* Hide background blobs */
+.light #projects .blur-\[100px\] {
+  display: none !important;
+}
+
+/* Hide gradient overlay at top */
+.light #projects .bg-gradient-to-b {
+  display: none !important;
+}
+
+.light .bg-black\/60,
+.light .bg-black\/80 {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Project cards */
+.light #projects .border-white\/10 {
+  border-color: #e2e8f0 !important;
+}
+
+.light #projects .bg-white\/5 {
+  background-color: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* ===== CONTACT SECTION ===== */
+.light #contact {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+/* Hide grid pattern */
+.light .bg-grid-pattern {
+  display: none !important;
+}
+
+/* Hide gradient overlays */
+.light #contact .bg-gradient-to-t,
+.light #contact .bg-gradient-to-r.from-cyan-500,
+.light #contact .bg-gradient-to-r.from-pink-500 {
+  display: none !important;
+}
+
+/* Form container */
+.light #contact .border-purple-500\/30 {
+  border-color: #e2e8f0 !important;
+  background-color: #ffffff !important;
+}
+
+/* Corner decorations */
+.light #contact .border-cyan-500,
+.light #contact .border-pink-500 {
+  border-color: #a78bfa !important;
+}
+
+.light .text-cyan-300,
+.light .text-cyan-400 {
+  color: #0891b2 !important;
+}
+
+.light .text-purple-300 {
+  color: #7c3aed !important;
+}
+
+.light .text-pink-500 {
+  color: #ec4899 !important;
+}
+
+.light .bg-purple-900\/30,
+.light .bg-purple-900\/50 {
+  background-color: #f3f4f6 !important;
+}
+
+/* Form inputs */
+.light input,
+.light textarea {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light input:focus,
+.light textarea:focus {
+  border-color: #a78bfa !important;
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15) !important;
+  outline: none !important;
+}
+
+/* Social link boxes - hover state */
+.light #contact a:hover {
+  background-color: #f3f4f6 !important;
+}
+
+/* ===== FOOTER ===== */
+.light footer {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  background-image: none !important;
+}
+
+/* ===== CARDS & CONTAINERS ===== */
+.light .glass-effect,
+.light .bg-white\/5,
+.light .bg-white\/10 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light .border-white\/10,
+.light .border-white\/20,
+.light .border-white\/30 {
+  border-color: #e2e8f0 !important;
+}
+
+.light .glassmorphism {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* ===== SCROLLBAR ===== */
+.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ===== PARTICLES & CANVAS - DEEP BLUE THEME FOR LIGHT MODE ===== */
+.light canvas {
+  opacity: 1 !important;
+  /* 
+     1. Invert colors to turn the original light particles to dark
+     2. Hugely increase saturation for vibrant color
+     3. Adjust hue to get that deep electric blue/indigo
+     4. Increase contrast to make lines sharp
+  */
+  filter: invert(1) hue-rotate(180deg) saturate(3) contrast(1.5) brightness(0.8) !important;
+}
+
+.light .particles-container {
+  opacity: 1 !important;
+  z-index: 0 !important; /* Ensure it stays behind content but visible */
+}
+
+/* Optional: Add a subtle drop shadow to particles for depth */
+.light canvas {
+  filter: invert(1) hue-rotate(180deg) saturate(3) contrast(1.5) brightness(0.8) drop-shadow(0 2px 4px rgba(0,0,0,0.1)) !important;
+}
+
+/* ===== BUTTONS ===== */
+.light .btn-primary {
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+.light .btn-primary:hover {
+  box-shadow: 0 6px 25px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* ===== HIDE DISTRACTING BACKGROUND CIRCLES ===== */
+.light .blur-3xl,
+.light .blur-2xl,
+.light .blur-xl,
+.light .rounded-full.blur-3xl, 
+.light .rounded-full.blur-2xl,
+.light .rounded-full.opacity-20,
+.light .rounded-full.opacity-15,
+.light .rounded-full.opacity-10 {
+  display: none !important;
+}
+
+/* Keep neural network animation but remove background glow */
+.light .neural-network::before,
+.light .neural-network::after {
+  display: none !important;
+}
+
+/* Keep some subtle animations but make sure they are invisible if they are blobs */
+.light .animate-pulse:not(button):not(.btn-primary):not(svg):not(.text-ml-accent) {
+  animation: none !important;
+  opacity: 0 !important;
+}
+
+/* ===== NAVBAR ===== */
+.light .bg-ml-dark\/80 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Logo in light mode */
+.light .text-gradient {
+  background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.light .text-ml-accent {
+  color: #7c3aed !important;
+}
+
+/* ===== SMOOTH TRANSITIONS ===== */
+*, *::before, *::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease, box-shadow 0.3s ease;
 }
 
 /* Neural Network Animation */
@@ -143,33 +585,9 @@
   background: #8a76e4;
 }
 
-
-
 /* styles/globals.css or your CSS file */
 
-/* Hide cursor on all elements */
-* {
-  cursor: none !important;
-}
-
-.custom-cursor {
-  position: fixed;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  background-image: url('/images/game-cursor.png'); /* Add your game-themed cursor image */
-  background-size: contain;
-  background-repeat: no-repeat;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s ease;
-}
-
-.cursor-clicked {
-  transform: translate(-50%, -50%) scale(0.8);
-}
-
+/* Cursor styles removed */
 
 /* Add this to your CSS file for animations and glassmorphism */
 @keyframes gradientShift {
@@ -186,6 +604,7 @@
 
 .card-tilt {
   transition: transform 0.3s ease;
+  will-change: transform;
 }
 
 .card-tilt:hover {
@@ -194,6 +613,7 @@
 
 .animate-scale {
   animation: scaleUp 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  will-change: transform;
 }
 
 @keyframes scaleUp {
@@ -306,7 +726,6 @@
 .animate-cursor {
   animation: cursorBlink 1s infinite;
 }
-
 
 /* About Section Styles */
 .game-container {
@@ -663,7 +1082,215 @@
   animation: fadeIn 0.5s ease-out forwards;
 }
 
+.data-stream {
+  position: absolute;
+  height: 300%;
+  width: 100%;
+  top: -100%;
+  background: repeating-linear-gradient(0deg, rgba(6, 182, 212, 0.15) 0px, rgba(6, 182, 212, 0.15) 1px, transparent 1px, transparent 5px);
+  animation: dataStream 8s linear infinite;
+}
+
+.glitch-text {
+  position: relative;
+  text-shadow: 0 0 5px rgba(6, 182, 212, 0.8);
+}
+
+.glitch-text:before, .glitch-text:after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text:before {
+  left: 2px;
+  text-shadow: -2px 0 #ff00ff;
+  animation: glitch-animation 1s infinite linear alternate-reverse;
+}
+
+.glitch-text:after {
+  left: -2px;
+  text-shadow: 2px 0 #00ffff;
+  animation: glitch-animation 2s infinite linear alternate-reverse;
+}
+
+.blink-led {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 4px;
+  height: 4px;
+  background-color: #00ffff;
+  border-radius: 50%;
+  animation: blink 1s infinite;
+}
+
+.cursor-blink {
+  animation: blink 1s infinite;
+}
+
+.terminal-text {
+  height: 80px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+.digital-noise {
+  position: absolute;
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  animation: noise 0.5s infinite;
+  pointer-events: none;
+}
+
+@keyframes glitch-animation {
+  0% { clip-path: inset(30% 0 70% 0); opacity: 0; }
+  20% { clip-path: inset(10% 0 90% 0); opacity: 0; }
+  41% { clip-path: inset(40% 0 60% 0); opacity: 0.8; }
+  42% { clip-path: inset(40% 0 60% 0); opacity: 0; }
+  45% { clip-path: inset(80% 0 20% 0); opacity: 1; }
+  61% { clip-path: inset(20% 0 80% 0); opacity: 0; }
+  62% { clip-path: inset(60% 0 40% 0); opacity: 0.5; }
+  70% { clip-path: inset(10% 0 90% 0); opacity: 0; }
+  100% { clip-path: inset(20% 0 80% 0); opacity: 0; }
+}
+
+@keyframes pulse-opacity {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.pulse-opacity {
+  animation: pulse-opacity 2s infinite;
+}
+
+.glitch {
+  position: relative;
+  animation: glitch 0.3s infinite;
+}
+
+.glitch:before, .glitch:after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch:before {
+  left: 2px;
+  text-shadow: -1px 0 red;
+  animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+.glitch:after {
+  left: -2px;
+  text-shadow: 2px 0 blue;
+  animation: glitch-anim2 1s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% { clip-path: inset(40% 0 61% 0); }
+  20% { clip-path: inset(92% 0 1% 0); }
+  40% { clip-path: inset(43% 0 1% 0); }
+  60% { clip-path: inset(25% 0 58% 0); }
+  80% { clip-path: inset(54% 0 7% 0); }
+  100% { clip-path: inset(58% 0 43% 0); }
+}
+
+@keyframes glitch-anim2 {
+  0% { clip-path: inset(25% 0 58% 0); }
+  20% { clip-path: inset(54% 0 7% 0); }
+  40% { clip-path: inset(58% 0 43% 0); }
+  60% { clip-path: inset(40% 0 61% 0); }
+  80% { clip-path: inset(92% 0 1% 0); }
+  100% { clip-path: inset(43% 0 1% 0); }
+}
+
+.animate-blink {
+  animation: blink 1s infinite;
+}
+
+.terminal-window {
+  background-color: rgba(30, 30, 30, 0.9);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 255, 155, 0.3);
+  box-shadow: 0 0 20px rgba(0, 255, 155, 0.2);
+}
+
+.particle {
+  animation: float linear infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 0.3; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+}
+
+.skill-node {
+  fill: #1f2937;
+  stroke: #6b7280;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.skill-node.active {
+  fill: #064e3b;
+  stroke: #34d399;
+  filter: drop-shadow(0 0 3px rgba(52, 211, 153, 0.5));
+}
+
+.skill-node.locked {
+  fill: #1f2937;
+  stroke: #4b5563;
+}
+
+.skill-line {
+  stroke: #4b5563;
+  stroke-width: 3;
+  stroke-dasharray: 5;
+}
+
+.skill-line.active {
+  stroke: #34d399;
+  stroke-dasharray: none;
+  filter: drop-shadow(0 0 1px rgba(52, 211, 153, 0.5));
+}
+
+.skill-text {
+  fill: #d1d5db;
+  font-size: 10px;
+  font-family: monospace;
+  pointer-events: none;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
 }

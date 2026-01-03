@@ -20,7 +20,7 @@ const ParticleBackground = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true }); // Optimized context
     if (!ctx) return;
     
     // Set canvas size
@@ -30,20 +30,30 @@ const ParticleBackground = () => {
     };
     
     setCanvasSize();
-    window.addEventListener('resize', setCanvasSize);
+    
+    // Debounced resize handler
+    let resizeTimeout: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(setCanvasSize, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
     
     // Create particles
     const createParticles = () => {
       const particles: Particle[] = [];
-      const particleCount = Math.min(window.innerWidth / 10, 100); // Limit based on screen size
+      // Reduce particle count slightly for performance on lower-end devices
+      const isMobile = window.innerWidth < 768;
+      const particleCount = Math.min(window.innerWidth / (isMobile ? 15 : 12), isMobile ? 50 : 80); 
       
       for (let i = 0; i < particleCount; i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           size: Math.random() * 2 + 1,
-          speedX: Math.random() * 1 - 0.5,
-          speedY: Math.random() * 1 - 0.5,
+          speedX: Math.random() * 0.8 - 0.4, // Slightly slower for smoother feel
+          speedY: Math.random() * 0.8 - 0.4,
           color: getRandomColor(),
         });
       }
@@ -56,85 +66,88 @@ const ParticleBackground = () => {
       return colors[Math.floor(Math.random() * colors.length)];
     };
     
-    // Update particle positions
-    const updateParticles = () => {
-      particlesRef.current.forEach((particle) => {
-        particle.x += particle.speedX;
-        particle.y += particle.speedY;
-        
-        // Bounce off walls
-        if (particle.x < 0 || particle.x > canvas.width) {
-          particle.speedX *= -1;
-        }
-        
-        if (particle.y < 0 || particle.y > canvas.height) {
-          particle.speedY *= -1;
-        }
-      });
-    };
-    
-    // Draw particles & connections
-    const drawParticles = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      particlesRef.current.forEach((particle) => {
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = particle.color;
-        ctx.globalAlpha = 0.5;
-        ctx.fill();
-        
-        // Draw connections near mouse
-        if (mousePosition.current.x > 0) {
-          const dx = mousePosition.current.x - particle.x;
-          const dy = mousePosition.current.y - particle.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < 120) {
-            ctx.beginPath();
-            ctx.strokeStyle = particle.color;
-            ctx.globalAlpha = 0.2 * (1 - distance / 120);
-            ctx.lineWidth = 1;
-            ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(mousePosition.current.x, mousePosition.current.y);
-            ctx.stroke();
-          }
-        }
-        
-        // Draw connections between close particles
-        particlesRef.current.forEach((otherParticle) => {
-          const dx = particle.x - otherParticle.x;
-          const dy = particle.y - otherParticle.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < 100) {
-            ctx.beginPath();
-            ctx.strokeStyle = particle.color;
-            ctx.globalAlpha = 0.1 * (1 - distance / 100);
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(otherParticle.x, otherParticle.y);
-            ctx.stroke();
-          }
-        });
-      });
-    };
+    // Pre-calculate squared distances to avoid Math.sqrt
+    const CONNECTION_DIST_SQ = 100 * 100;
+    const MOUSE_DIST_SQ = 120 * 120;
     
     // Animation loop
     const animate = () => {
-      updateParticles();
-      drawParticles();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      const particles = particlesRef.current;
+      const len = particles.length;
+      const mouseX = mousePosition.current.x;
+      const mouseY = mousePosition.current.y;
+
+      // Update and Draw loop optimized
+      for (let i = 0; i < len; i++) {
+        const p1 = particles[i];
+        
+        // Update position
+        p1.x += p1.speedX;
+        p1.y += p1.speedY;
+        
+        // Bounce off walls
+        if (p1.x < 0 || p1.x > canvas.width) p1.speedX *= -1;
+        if (p1.y < 0 || p1.y > canvas.height) p1.speedY *= -1;
+        
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p1.x, p1.y, p1.size, 0, Math.PI * 2);
+        ctx.fillStyle = p1.color;
+        
+        // Batch global alpha for particles? No, they might be different in future.
+        // But keeping it simple:
+        ctx.globalAlpha = 0.5;
+        ctx.fill();
+        
+        // Mouse connections (Squared distance)
+        // Only if mouse has moved at least once (initial is 0,0)
+        if (mouseX > 0 || mouseY > 0) {
+          const dx = mouseX - p1.x;
+          const dy = mouseY - p1.y;
+          const distSq = dx * dx + dy * dy;
+          
+          if (distSq < MOUSE_DIST_SQ) {
+            ctx.beginPath();
+            ctx.strokeStyle = p1.color;
+            ctx.globalAlpha = 0.2 * (1 - Math.sqrt(distSq) / 120); // sqrt needed for linear fade, but acceptable once per close particle
+            ctx.lineWidth = 1;
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(mouseX, mouseY);
+            ctx.stroke();
+          }
+        }
+
+        // Particle-to-Particle connections (Optimized loop: j = i + 1)
+        for (let j = i + 1; j < len; j++) {
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const distSq = dx*dx + dy*dy;
+          
+          if (distSq < CONNECTION_DIST_SQ) {
+            ctx.beginPath();
+            ctx.strokeStyle = p1.color;
+            ctx.globalAlpha = 0.1 * (1 - Math.sqrt(distSq) / 100);
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+      
       animationFrameId.current = requestAnimationFrame(animate);
     };
     
     const handleMouseMove = (event: MouseEvent) => {
-      mousePosition.current = {
-        x: event.clientX,
-        y: event.clientY,
-      };
+      mousePosition.current.x = event.clientX;
+      mousePosition.current.y = event.clientY;
     };
     
-    canvas.addEventListener('mousemove', handleMouseMove);
+    // Use passive listener for better scroll performance
+    canvas.addEventListener('mousemove', handleMouseMove, { passive: true });
     
     // Start animation
     createParticles();
@@ -142,7 +155,7 @@ const ParticleBackground = () => {
     
     // Cleanup
     return () => {
-      window.removeEventListener('resize', setCanvasSize);
+      window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('mousemove', handleMouseMove);
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
