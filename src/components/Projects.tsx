@@ -80,24 +80,19 @@ const Projects = () => {
   }, []);
 
   return (
-    <div className="bg-slate-950 relative" id="projects">
+    <div className="bg-ml-dark relative" id="projects">
       {/* Background Ambience */}
-      <div className="absolute inset-0 pointer-events-none">
-         <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-slate-900 to-transparent z-10" />
-         <div className="sticky top-0 h-screen overflow-hidden">
-            <div className={`absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-[100px] transition-opacity duration-700 ${activeCardIndex === 0 ? 'opacity-100' : 'opacity-0'}`} />
-            <div className={`absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] transition-opacity duration-700 ${activeCardIndex === 1 ? 'opacity-100' : 'opacity-0'}`} />
-            <div className={`absolute top-1/2 left-1/2 w-96 h-96 bg-emerald-500/20 rounded-full blur-[100px] transition-opacity duration-700 ${activeCardIndex === 2 ? 'opacity-100' : 'opacity-0'}`} />
-         </div>
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-gray-50 via-gray-100 to-gray-50 dark:from-black dark:via-gray-950 dark:to-black transition-colors duration-500">
+         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-20 py-20">
-        <div className="mb-20">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white tracking-tight">
-              Featured <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">Projects</span>
+        <div className="mb-20 text-center">
+            <h2 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-gray-900 to-gray-500 dark:from-white dark:to-gray-600 tracking-tighter mb-4">
+               PROJECTS
             </h2>
-            <p className="text-xl text-slate-400 max-w-2xl">
-              Here are some of the projects I've worked on. Each one was a unique challenge that pushed my skills further.
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+              Featured work: Each one was a unique challenge that pushed my skills further.
             </p>
         </div>
 

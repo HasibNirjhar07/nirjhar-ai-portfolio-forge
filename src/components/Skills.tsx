@@ -255,23 +255,17 @@ const Skills = () => {
       className="w-full min-h-screen bg-ml-dark relative flex flex-col items-center justify-center py-20 overflow-hidden"
       ref={sectionRef}
     >
-      {/* Enhanced background */}
-      <AnimatedGradient />
-      
-      {/* Floating particles */}
-      {/* <FloatingGalaxy count={30} /> */}
-      
-      {/* Animated grid background */}
-      <div className="absolute inset-0 bg-grid opacity-20"></div>
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-gray-50 via-gray-100 to-gray-50 dark:from-black dark:via-gray-950 dark:to-black transition-colors duration-500">
+         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
+      </div>
       
       <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
-        {/* Header text with enhanced animation */}
         <div className={`text-center mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            This is my <span className="text-purple-400 glow-text">tech stack</span>
+          <h2 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-gray-900 to-gray-500 dark:from-white dark:to-gray-600 tracking-tighter mb-4">
+            SKILLS
           </h2>
           <p className="text-lg text-white/80 max-w-2xl mx-auto">
-            Tools I use to build innovative and impactful solutions
+            My tech stack: Tools I use to build innovative and impactful solutions
           </p>
         </div>
 
@@ -450,141 +444,7 @@ const Skills = () => {
       </div>
 
       {/* Enhanced CSS Animations */}
-      <style jsx global>{`
-        @keyframes spin-slow {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes reverse-spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(-360deg); }
-        }
-        
-        @keyframes pulse-slow {
-          0%, 100% { transform: scale(1); opacity: 0.8; }
-          50% { transform: scale(1.05); opacity: 1; }
-        }
-        
-        @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 15px 2px rgba(139, 92, 246, 0.3); }
-          50% { box-shadow: 0 0 25px 8px rgba(139, 92, 246, 0.6); }
-        }
-        
-        @keyframes gradientFlow {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        
-        @keyframes orbit-1 {
-          0% { transform: rotate(0deg) scale(1); }
-          50% { transform: rotate(180deg) scale(1.03); }
-          100% { transform: rotate(360deg) scale(1); }
-        }
-        
-        @keyframes orbit-2 {
-          0% { transform: rotate(0deg) scale(1); }
-          50% { transform: rotate(-180deg) scale(1.05); }
-          100% { transform: rotate(-360deg) scale(1); }
-        }
-        
-        @keyframes orbit-3 {
-          0% { transform: rotate(0deg) scale(1); }
-          50% { transform: rotate(180deg) scale(1.07); }
-          100% { transform: rotate(360deg) scale(1); }
-        }
-        
-        @keyframes orbit-4 {
-          0% { transform: rotate(0deg) scale(1); }
-          50% { transform: rotate(-180deg) scale(1.04); }
-          100% { transform: rotate(-360deg) scale(1); }
-        }
-        
-        @keyframes glow {
-          0%, 100% { opacity: 0.5; box-shadow: 0 0 10px 2px rgba(139, 92, 246, 0.3); }
-          50% { opacity: 0.8; box-shadow: 0 0 20px 5px rgba(139, 92, 246, 0.6); }
-        }
-        
-        .animate-pulse-slow {
-          animation: pulse-slow 3s ease-in-out infinite;
-        }
-        
-        .animate-glow {
-          animation: glow 4s ease-in-out infinite;
-        }
-        
-        .animate-orbit-1 {
-          animation: orbit-1 20s linear infinite;
-        }
-        
-        .animate-orbit-2 {
-          animation: orbit-2 25s linear infinite;
-        }
-        
-        .animate-orbit-3 {
-          animation: orbit-3 30s linear infinite;
-        }
-        
-        .animate-orbit-4 {
-          animation: orbit-4 35s linear infinite;
-        }
-        
-        .animate-gradientFlow {
-          background: linear-gradient(45deg, 
-            rgba(76, 29, 149, 0.1) 0%, 
-            rgba(124, 58, 237, 0.1) 25%, 
-            rgba(139, 92, 246, 0.1) 50%, 
-            rgba(124, 58, 237, 0.1) 75%, 
-            rgba(76, 29, 149, 0.1) 100%);
-          background-size: 400% 400%;
-          animation: gradientFlow 15s ease infinite;
-        }
-        
-        .bg-ml-dark {
-          background-color: #0C0517;
-        }
-        
-        .bg-grid {
-          background-image: linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
-                           linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px);
-          background-size: 40px 40px;
-        }
-        
-        .tech-icon {
-          position: relative;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-        
-        .tech-icon:hover {
-          box-shadow: 0 0 15px 2px rgba(139, 92, 246, 0.5);
-        }
-        
-        .tech-tooltip {
-          position: absolute;
-          background-color: #1E123A;
-          color: white;
-          padding: 2px 8px;
-          border-radius: 4px;
-          font-size: 0.75rem;
-          white-space: nowrap;
-          opacity: 0;
-          transform: scale(0.9);
-          transition: all 0.2s ease;
-          z-index: 10;
-          top: -25px;
-        }
-        
-        .tech-icon:hover .tech-tooltip {
-          opacity: 1;
-          transform: scale(1);
-        }
-        
-        .glow-text {
-          text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
-        }
-      `}</style>
+
     </section>
   );
 };

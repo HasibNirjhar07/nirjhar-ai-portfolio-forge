@@ -12,7 +12,7 @@ const Contact = () => {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   // EmailJS configuration - Replace with your actual values
@@ -22,7 +22,7 @@ const Contact = () => {
 
   // Form validation function
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: Record<string, string> = {};
     
     if (!formData.user_name.trim()) newErrors.user_name = "Name is required";
     
@@ -141,11 +141,10 @@ const Contact = () => {
   }, []);
 
   return (
-    <section id="contact" className="py-20 bg-black relative overflow-hidden">
-      {/* Cyberpunk grid background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent"></div>
+    <section id="contact" className="py-20 bg-ml-dark relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-gray-50 via-gray-100 to-gray-50 dark:from-black dark:via-gray-950 dark:to-black transition-colors duration-500">
+         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
       </div>
       
       {/* Animated neon lines */}
@@ -157,9 +156,8 @@ const Contact = () => {
           ref={sectionRef}
           className="opacity-0 translate-y-10 transition-all duration-700"
         >
-          <h2 className={`text-4xl md:text-5xl font-bold text-center mb-2 ${glitchText ? 'cyberpunk-glitch' : ''}`}>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">ESTABLISH</span>{' '}
-            <span className="text-pink-500">CONNECTION</span>
+          <h2 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-gray-900 to-gray-500 dark:from-white dark:to-gray-600 tracking-tighter mb-4 text-center">
+             CONTACT
           </h2>
           
           <div className="w-24 h-1 mx-auto my-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500"></div>
@@ -347,7 +345,7 @@ const Contact = () => {
       </div>
       
       {/* Add the CSS for grid pattern and glitch effect */}
-      <style jsx>{`
+      <style>{`
         .bg-grid-pattern {
           background-image: linear-gradient(to right, rgba(99, 102, 241, 0.1) 1px, transparent 1px),
                             linear-gradient(to bottom, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
