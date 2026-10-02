@@ -1,551 +1,274 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  ArrowDown,
-  Cpu,
-  Code,
-  Brain,
-  Github,
-  Linkedin,
-  Mail,
-  ExternalLink,
+import { useRef, useEffect, Suspense } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { 
+  Environment, 
+  Float, 
+  ContactShadows, 
+  PerspectiveCamera, 
+  Stars,
+  Sparkles as ThreeSparkles 
+} from "@react-three/drei";
+import { motion } from "framer-motion";
+import * as THREE from "three";
+import { 
+  ArrowDown, 
+  Rocket, 
+  Mail, 
+  Github, 
+  Linkedin, 
   Download,
+  Cpu,
+  Terminal
 } from "lucide-react";
 
-// Define types for our component
-interface TechItem {
-  name: string;
-  color: string;
-}
+// --- 3D Components ---
 
-interface SocialLink {
-  icon: JSX.Element;
-  href: string;
-  label: string;
-}
+const Wheel = ({ position }: { position: [number, number, number] }) => (
+  <group position={position}>
+    <mesh rotation={[Math.PI / 2, 0, 0]}>
+      <cylinderGeometry args={[0.35, 0.35, 0.3, 32]} />
+      <meshStandardMaterial color="#1e293b" roughness={0.8} />
+    </mesh>
+    <mesh rotation={[Math.PI / 2, 0, 0]}>
+       <cylinderGeometry args={[0.2, 0.2, 0.32, 16]} />
+       <meshStandardMaterial color="#94a3b8" metalness={0.8} roughness={0.2} />
+    </mesh>
+    <mesh rotation={[Math.PI / 2, 0, 0]}>
+       <torusGeometry args={[0.35, 0.05, 16, 32]} />
+       <meshStandardMaterial color="#0f172a" />
+    </mesh>
+  </group>
+);
 
-// Define Particle class type
-class Particle {
-  x: number;
-  y: number;
-  size: number;
-  speedX: number;
-  speedY: number;
-  color: string;
-
-  constructor(canvasWidth: number, canvasHeight: number) {
-    this.x = Math.random() * canvasWidth;
-    this.y = Math.random() * canvasHeight;
-    this.size = Math.random() * 2 + 0.5;
-    this.speedX = Math.random() * 0.5 - 0.25;
-    this.speedY = Math.random() * 0.5 - 0.25;
-    this.color = `rgba(99, 102, 241, ${Math.random() * 0.5 + 0.2})`;
-  }
-
-  update(): void {
-    this.x += this.speedX;
-    this.y += this.speedY;
-
-    if (this.x < 0 || this.x > window.innerWidth) this.speedX *= -1;
-    if (this.y < 0 || this.y > window.innerHeight) this.speedY *= -1;
-  }
-
-  draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
-const Hero: React.FC = () => {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  const heroRef = useRef<HTMLElement | null>(null);
-  const [scrollY, setScrollY] = useState<number>(0);
-  const [typingComplete, setTypingComplete] = useState<boolean>(false);
+const Rover = ({ mouse, scrollY }: { mouse: React.MutableRefObject<{ x: number, y: number }>, scrollY: React.MutableRefObject<number> }) => {
+  const group = useRef<THREE.Group>(null);
+  const neckRef = useRef<THREE.Group>(null);
   
-  // Main title typewriter state
-  const [typingText, setTypingText] = useState("");
-  const [phraseIndex, setPhraseIndex] = useState(0);
-  const [isDeletingPhrase, setIsDeletingPhrase] = useState(false);
-  const phrases = ["Hasibul Islam Nirjhar", "A Software Engineer", "An AI Enthusiast"];
+  useFrame((state) => {
+    if (!group.current) return;
+    
+    // Calculate progress (0 to 1) based on scrollY (assuming 800px hero height)
+    const progress = Math.min(Math.max(scrollY.current / 800, 0), 1);
+    
+    // Animation Targets
+    // Resting: x=2, y=-1, z=0
+    // Scrolled: x=5, y=-2, z=-8
+    const targetZ = THREE.MathUtils.lerp(0, -8, progress);
+    const targetX = THREE.MathUtils.lerp(2, 5, progress);
+    const targetYPos = THREE.MathUtils.lerp(-1, -2, progress);
+    const targetScale = THREE.MathUtils.lerp(1, 0.5, progress);
+    const targetRotY = THREE.MathUtils.lerp(0, -Math.PI / 2, progress);
+
+    // Apply Scroll Transforms (Direct lerp for responsiveness)
+    group.current.position.x = THREE.MathUtils.lerp(group.current.position.x, targetX, 0.1);
+    group.current.position.y = THREE.MathUtils.lerp(group.current.position.y, targetYPos, 0.1);
+    group.current.position.z = THREE.MathUtils.lerp(group.current.position.z, targetZ, 0.1);
+    group.current.scale.setScalar(THREE.MathUtils.lerp(group.current.scale.x, targetScale, 0.1));
+
+    // Mouse Tilt Logic
+    const tiltX = mouse.current.y * 0.2; // Look up/down
+    const tiltY = mouse.current.x * 0.2 + Math.PI / 6; // Look left/right + Base rotation
+
+    // Combine Scroll Rotation + Mouse Tilt
+    const combinedRotY = tiltY + targetRotY;
+    
+    group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, tiltX, 0.05);
+    group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, combinedRotY, 0.05);
+
+    // Idle Animation
+    if (neckRef.current) {
+        neckRef.current.rotation.y = Math.sin(state.clock.elapsedTime) * 0.3;
+        neckRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
+    }
+  });
+
+  return (
+    <Float rotationIntensity={0.2} floatIntensity={0.5} floatingRange={[-0.1, 0.1]}>
+      <group ref={group} position={[2, -1, 0]} rotation={[0, Math.PI / 6, 0]}>
+        {/* Chassis */}
+        <mesh castShadow receiveShadow>
+           <boxGeometry args={[1.6, 0.5, 2.2]} />
+           <meshStandardMaterial color="#f8fafc" roughness={0.3} metalness={0.6} />
+        </mesh>
+        
+        {/* Top Detail */}
+        <mesh position={[0, 0.26, 0.5]} rotation={[-Math.PI/2, 0, 0]}>
+           <planeGeometry args={[1, 0.5]} />
+           <meshStandardMaterial color="#334155" />
+        </mesh>
+
+        {/* Solar Panels */}
+        <group position={[0, 0.25, -0.2]}>
+           <mesh position={[-1.4, 0, 0]} rotation={[0, 0, 0.2]} castShadow>
+              <cylinderGeometry args={[0.8, 1, 0.05, 6]} />
+              <meshStandardMaterial color="#fbbf24" roughness={0.2} metalness={1} emissive="#fbbf24" emissiveIntensity={0.1} />
+           </mesh>
+           <mesh position={[1.4, 0, 0]} rotation={[0, 0, -0.2]} castShadow>
+              <cylinderGeometry args={[0.8, 1, 0.05, 6]} />
+              <meshStandardMaterial color="#fbbf24" roughness={0.2} metalness={1} emissive="#fbbf24" emissiveIntensity={0.1} />
+           </mesh>
+        </group>
+
+        {/* Camera Mast */}
+        <group position={[0, 0.25, 0.8]}>
+           <mesh position={[0, 0.4, 0]}>
+              <cylinderGeometry args={[0.08, 0.12, 0.8]} />
+              <meshStandardMaterial color="#f8fafc" roughness={0.3} metalness={0.6} />
+           </mesh>
+           <group ref={neckRef} position={[0, 0.8, 0]}>
+              <mesh>
+                 <boxGeometry args={[0.5, 0.25, 0.3]} />
+                 <meshStandardMaterial color="#f8fafc" roughness={0.3} metalness={0.6} />
+              </mesh>
+              {/* Lenses */}
+              <mesh position={[-0.12, 0, 0.16]} rotation={[Math.PI/2, 0, 0]}>
+                 <cylinderGeometry args={[0.08, 0.08, 0.05, 16]} />
+                 <meshStandardMaterial color="#3b82f6" roughness={0} metalness={0.8} emissive="#60a5fa" emissiveIntensity={0.8} />
+              </mesh>
+              <mesh position={[0.12, 0, 0.16]} rotation={[Math.PI/2, 0, 0]}>
+                 <cylinderGeometry args={[0.08, 0.08, 0.05, 16]} />
+                 <meshStandardMaterial color="#3b82f6" roughness={0} metalness={0.8} emissive="#60a5fa" emissiveIntensity={0.8} />
+              </mesh>
+           </group>
+        </group>
+
+        {/* Wheels */}
+        <Wheel position={[-1, -0.3, 0.7]} />
+        <Wheel position={[1, -0.3, 0.7]} />
+        <Wheel position={[-1.1, -0.3, 0]} />
+        <Wheel position={[1.1, -0.3, 0]} />
+        <Wheel position={[-1, -0.3, -0.7]} />
+        <Wheel position={[1, -0.3, -0.7]} />
+      </group>
+    </Float>
+  );
+};
+
+const HeroScene = ({ mouse, scrollY }: { mouse: React.MutableRefObject<{ x: number, y: number }>, scrollY: React.MutableRefObject<number> }) => (
+  <>
+    <PerspectiveCamera makeDefault position={[0, 2, 6]} fov={50} />
+    {/* Use Suspense for Environment to safely handle loading */}
+    <Environment preset="city" />
+    
+    <ambientLight intensity={0.4} />
+    <pointLight position={[10, 10, 10]} intensity={1.5} color="#818cf8" />
+    <pointLight position={[-10, -10, -5]} intensity={0.5} color="#f472b6" />
+    
+    <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
+    <ThreeSparkles count={50} scale={10} size={2} speed={0.4} opacity={0.5} color="#c084fc" />
+    
+    <ContactShadows resolution={512} scale={20} blur={2} opacity={0.5} far={10} color="#000000" />
+    
+    <Rover mouse={mouse} scrollY={scrollY} />
+  </>
+);
+
+const Hero = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  // Refs for tracking mutable state without re-renders
+  const mouse = useRef({ x: 0, y: 0 });
+  const scrollY = useRef(0);
 
   useEffect(() => {
-    const currentPhrase = phrases[phraseIndex % phrases.length];
-    const typingSpeed = isDeletingPhrase ? 100 : 150;
-    const pauseTime = 2000;
-
-    const timeout = setTimeout(() => {
-      if (!isDeletingPhrase) {
-        if (typingText.length < currentPhrase.length) {
-          setTypingText(currentPhrase.slice(0, typingText.length + 1));
-        } else {
-          setTimeout(() => setIsDeletingPhrase(true), pauseTime);
-        }
-      } else {
-        if (typingText.length > 0) {
-          setTypingText(currentPhrase.slice(0, typingText.length - 1));
-        } else {
-          setIsDeletingPhrase(false);
-          setPhraseIndex((prev) => prev + 1);
-        }
-      }
-    }, typingSpeed);
-
-    return () => clearTimeout(timeout);
-  }, [typingText, isDeletingPhrase, phraseIndex]);
-
-  // Typing animation state
-  const [displayedCode, setDisplayedCode] = useState<string>("");
-  const fullCode = `const hasibul = {
-  name: "Hasibul Islam Nirjhar",
-  location: "Bangladesh",
-  education: "Software Engineering",
-  skills: ["AI/ML", "Web Dev", "Mobile"],
-  debugWith: (bugs) => "☕ + 🍕",
-  solveProblems: true
-};`;
-
-  // Particle animation ref
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  // Tech stack with icons
-  const techStack: TechItem[] = [
-    { name: "TensorFlow", color: "bg-orange-500" },
-    { name: "PyTorch", color: "bg-red-500" },
-    { name: "React", color: "bg-blue-400" },
-    { name: "Node.js", color: "bg-green-500" },
-    { name: "Python", color: "bg-yellow-500" },
-    { name: "JavaScript", color: "bg-yellow-300" },
-  ];
-
-  // Handle canvas animation
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) return;
-
-    const particles: Particle[] = [];
-    let animationFrameId: number;
-
-    // Set canvas dimensions
-    const resizeCanvas = (): void => {
-      if (canvas) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
+    const handleScroll = () => {
+      scrollY.current = window.scrollY;
+    };
+    const handleMouseMove = (e: MouseEvent) => {
+        // Safe window check
+        if (!window) return;
+        const x = (e.clientX / window.innerWidth) * 2 - 1;
+        const y = -(e.clientY / window.innerHeight) * 2 + 1;
+        mouse.current = { x, y };
     };
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    // Create particles
-    const createParticles = (): void => {
-      const particleCount = Math.min(window.innerWidth / 10, 100);
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle(canvas.width, canvas.height));
-      }
-    };
-
-    createParticles();
-
-    // Animation loop
-    const animate = (): void => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw connections between nearby particles
-      ctx.strokeStyle = "rgba(99, 102, 241, 0.1)";
-      ctx.lineWidth = 0.5;
-
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 100) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      // Update and draw particles
-      particles.forEach((particle) => {
-        particle.update();
-        particle.draw(ctx);
-      });
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animate();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
-  useEffect(() => {
-    // Handle scroll events
-    const handleScroll = (): void => {
-      setScrollY(window.scrollY);
-    };
-
-    // Visibility observer
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
-    }
-
-    window.addEventListener("scroll", handleScroll);
-
-    // Typing animation
-    let currentIndex = 0;
-    const typingInterval = setInterval(() => {
-      if (currentIndex < fullCode.length) {
-        setDisplayedCode(fullCode.substring(0, currentIndex + 1));
-        currentIndex++;
-      } else {
-        clearInterval(typingInterval);
-        setTypingComplete(true);
-      }
-    }, 40);
-
-    return () => {
-      if (heroRef.current) {
-        observer.unobserve(heroRef.current);
-      }
-      window.removeEventListener("scroll", handleScroll);
-      clearInterval(typingInterval);
-    };
-  }, [fullCode]);
-
-  // Compute animation classes
-  const containerClasses = isVisible
-    ? "opacity-100 translate-y-0"
-    : "opacity-0 translate-y-10";
-
-  // Calculate parallax effect
-  const parallaxOffset = scrollY * 0.15;
-
-  // Define social links
-  const socialLinks: SocialLink[] = [
-    { icon: <Github size={20} />, href: "#github", label: "GitHub" },
-    { icon: <Linkedin size={20} />, href: "#linkedin", label: "LinkedIn" },
-    { icon: <Mail size={20} />, href: "#contact", label: "Email" },
-  ];
-
   return (
     <section
+      ref={containerRef}
       id="hero"
-      ref={heroRef}
-      className="min-h-screen  flex items-center justify-center relative overflow-hidden bg-ml-dark"
+      className="relative w-full h-screen overflow-hidden bg-background"
     >
-      {/* Particle Background */}
-      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
-
-      {/* Background Gradients */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full blur-3xl opacity-20 bg-ml-primary animate-float"></div>
-        <div className="absolute top-1/3 right-20 w-80 h-80 rounded-full blur-3xl opacity-15 bg-indigo-500 animate-pulse"></div>
-        <div className="absolute -bottom-20 left-1/4 w-72 h-72 rounded-full blur-3xl opacity-10 bg-ml-accent animate-float-slow"></div>
+      {/* 3D Canvas */}
+      <div className="absolute inset-0 z-0">
+        <Canvas shadows dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
+           <Suspense fallback={null}>
+              <HeroScene mouse={mouse} scrollY={scrollY} />
+           </Suspense>
+        </Canvas>
       </div>
 
-      <div className="container z-10 px-4 sm:px-6 lg:px-8 mx-auto">
-        <div
-          className={`transition-all duration-1000 ease-out ${containerClasses}`}
-        >
-          <div className="grid grid-cols-1 mt-10 lg:grid-cols-12 gap-8 items-center">
-            {/* LEFT: TEXT CONTENT (7 columns) */}
-            <div className="lg:col-span-7 space-y-6">
-              <div
-                className="inline-block"
-                style={{
-                  animation: isVisible
-                    ? "fadeSlideUp 0.8s ease forwards"
-                    : "none",
-                  opacity: 0,
-                }}
-              >
+      {/* Overlay UI */}
+      <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-center pointer-events-none">
+         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             
-              </div>
-
-              <h1
-                className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
-                style={{
-                  animation: isVisible
-                    ? "fadeSlideUp 0.8s 0.2s ease forwards"
-                    : "none",
-                  opacity: 0,
-                }}
-              >
-                <span className="block text-white mb-2">Hi, I'm</span>
-                <span className="relative inline-block min-w-[280px] md:min-w-[400px] h-[1.2em]">
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-ml-primary to-ml-accent animate-gradient-animation">
-                    {typingText}
-                  </span>
-                  <span className="animate-cursor text-ml-primary ml-1">|</span>
-                  <span className="absolute -bottom-1 md:-bottom-2 left-0 w-full h-1 md:h-2 bg-gradient-to-r from-ml-primary to-ml-accent rounded opacity-70"></span>
-                </span>
-              </h1>
-
-              <p
-                className="text-xl text-white/80 leading-relaxed"
-                style={{
-                  animation: isVisible
-                    ? "fadeSlideUp 0.8s 0.4s ease forwards"
-                    : "none",
-                  opacity: 0,
-                }}
-              >
-                A passionate{" "}
-                <span className="text-ml-primary font-semibold relative inline-block group">
-                  Software Engineering
-                  <span className="absolute -bottom-1 left-0 w-0 h-1 bg-ml-accent opacity-70 rounded group-hover:w-full transition-all duration-300"></span>
-                </span>{" "}
-                student exploring the frontiers of AI, Machine Learning, and Web
-                Development.
-              </p>
-
-              {/* Social icons */}
-              <div
-                className="flex space-x-4 pt-2"
-                style={{
-                  animation: isVisible
-                    ? "fadeSlideUp 0.8s 0.6s ease forwards"
-                    : "none",
-                  opacity: 0,
-                }}
-              >
-                {socialLinks.map((social, index) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    aria-label={social.label}
-                    className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 hover:border-white/30 hover:scale-110 transition-all duration-300"
-                    style={{ animationDelay: `${0.7 + index * 0.1}s` }}
-                  >
-                    {social.icon}
-                  </a>
-                ))}
-              </div>
-
-              <div
-                className="flex flex-wrap gap-4 pt-4"
-                style={{
-                  animation: isVisible
-                    ? "fadeSlideUp 0.8s 0.8s ease forwards"
-                    : "none",
-                  opacity: 0,
-                }}
-              >
-                <a
-                  href="/resume.pdf"
-                  download
-                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-ml-primary to-ml-accent rounded-lg text-white font-medium shadow-lg hover:shadow-ml-primary/40 transition-all duration-300 hover:scale-105 hover:-translate-y-1"
-                >
-                  <Download size={18} />
-                  <span>Download CV</span>
-                </a>
-                <a
-                  href="#contact"
-                  className="flex items-center space-x-2 px-6 py-3 border border-white/20 rounded-lg text-white font-medium backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:border-white/40 hover:-translate-y-1"
-                >
-                  <span>Contact Me</span>
-                  <ExternalLink size={16} />
-                </a>
-              </div>
-
-              {/* Tech stack animation */}
-              <div
-                className="pt-6"
-                style={{
-                  animation: isVisible
-                    ? "fadeSlideUp 0.8s 1s ease forwards"
-                    : "none",
-                  opacity: 0,
-                }}
-              >
-                <p className="text-white/60 text-sm mb-3">
-                  Technologies I work with:
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  {techStack.map((tech, index) => (
-                    <div
-                      key={tech.name}
-                      className={`px-3 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-white/80 backdrop-blur-sm hover:scale-110 transition-all duration-300 group hover:bg-white/10 hover:shadow-lg`}
-                      style={{
-                        animationDelay: `${1.2 + index * 0.1}s`,
-                        animation: isVisible
-                          ? "fadeIn 0.5s ease forwards"
-                          : "none",
-                        opacity: 0,
-                      }}
-                    >
-                      <div className="flex items-center space-x-1.5">
-                        <span
-                          className={`inline-block w-2 h-2 rounded-full ${tech.color}`}
-                        ></span>
-                        <span>{tech.name}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* RIGHT: PROFILE IMAGE + CODE (5 columns) */}
-            <div className="lg:col-span-5 relative">
-              {/* Floating elements */}
-              <div className="absolute -top-10 -left-10 w-20 h-20 opacity-20 animate-spin-slow">
-                <div className="absolute inset-0 border-4 border-dashed border-ml-primary rounded-full"></div>
-              </div>
-              <div className="absolute -bottom-5 -right-5 w-16 h-16 opacity-20 animate-spin-slow-reverse">
-                <div className="absolute inset-0 border-4 border-dashed border-ml-accent rounded-full"></div>
-              </div>
-
-              {/* PROFILE IMAGE */}
-              <div
-                className="relative mx-auto w-40 h-40 md:w-48 md:h-48"
-                style={{
-                  animation: isVisible ? "fadeIn 1s ease forwards" : "none",
-                  opacity: 0,
-                  transform: isVisible
-                    ? `translateY(${-parallaxOffset}px)`
-                    : "translateY(20px)",
-                  transition: "transform 0.3s ease-out",
-                }}
-              >
-                <div className="absolute inset-0 blur-md bg-ml-primary/30 rounded-full animate-pulse"></div>
-                <div className="absolute inset-0 rounded-full overflow-hidden border-4 border-ml-accent/80 shadow-lg shadow-ml-primary/30 hover:scale-105 transition-transform duration-300">
-                  <img
-                    src="/profile.jpg"
-                    alt="Hasibul Islam Nirjhar"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* Orbiting circle */}
-                <div className="absolute inset-0 animate-orbit pointer-events-none">
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6 w-4 h-4 rounded-full bg-ml-accent/70"></div>
-                </div>
-              </div>
-
-              {/* CODE CARD */}
-              <div
-                className="relative z-10 p-2 md:p-4 rounded-2xl overflow-hidden mt-8 bg-[rgba(16,20,30,0.8)] backdrop-blur-md border border-white/10 shadow-lg hover:shadow-ml-primary/20 transition-all duration-300"
-                style={{
-                  animation: isVisible
-                    ? "fadeIn 1s 0.3s ease forwards, floatAnimation 5s ease-in-out infinite"
-                    : "none",
-                  opacity: 0,
-                  transform: isVisible
-                    ? `translateY(${parallaxOffset * 0.5}px)`
-                    : "translateY(40px)",
-                  transition: "transform 0.3s ease-out",
-                }}
-              >
-                <div className="coding-animation text-left p-4 bg-ml-dark rounded-lg overflow-hidden border border-white/10">
-                  <div className="flex space-x-2 mb-4">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  </div>
-
-                  <pre className="text-sm font-mono text-green-400 leading-relaxed overflow-x-auto">
-                    <code>{displayedCode}</code>
-                    <span
-                      className={`h-4 w-2 bg-white/70 inline-block ${
-                        typingComplete
-                          ? "animate-pulse"
-                          : "animate-typing-cursor"
-                      }`}
-                    ></span>
-                  </pre>
-                </div>
-
-                {/* Floating ML icons */}
-                <div className="absolute top-3 right-3 opacity-40 animate-float">
-                  <Cpu size={20} className="text-ml-accent" />
-                </div>
-
-                {/* Decorative elements */}
-                <div className="absolute -bottom-2 -left-2 w-8 h-8 text-ml-primary/40 animate-spin-slow">
-                  <div className="w-full h-full border-4 border-current rounded-full border-t-transparent"></div>
-                </div>
-              </div>
-
-              {/* Small code snippets floating */}
-              <div
-                className="absolute -right-4 top-12 p-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-sm"
-                style={{
-                  animation:
-                    "float 3s ease-in-out infinite, fadeIn 1s 0.8s forwards",
-                  opacity: 0,
-                }}
-              >
-                <div className="text-xs text-ml-accent font-mono">ML.run()</div>
-              </div>
-
-              <div
-                className="absolute -left-2 bottom-8 p-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-sm"
-                style={{
-                  animation:
-                    "float 4s ease-in-out infinite, fadeIn 1s 1s forwards",
-                  animationDelay: "0.5s, 1s",
-                  opacity: 0,
-                }}
-              >
-                <div className="text-xs text-green-400 font-mono">
-                  {"{"} AI: true {"}"}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Scroll Indicator */}
-          <div
-            className="mt-16 w-full flex justify-center"
-            style={{
-              animation: isVisible ? "fadeIn 1s 1.2s ease forwards" : "none",
-              opacity: 0,
-            }}
-          >
-            <a
-              href="#about"
-              className="flex flex-col items-center justify-center text-white/60 hover:text-white transition-colors animate-bounce"
-              onClick={(e) => {
-                e.preventDefault();
-                const aboutSection = document.getElementById("about");
-                if (aboutSection) {
-                  aboutSection.scrollIntoView({ behavior: "smooth" });
-                }
-              }}
+            {/* Left Content */}
+            <motion.div 
+               initial={{ opacity: 0, y: 30 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.8 }}
+               className="pointer-events-auto space-y-6"
             >
-              <span className="mb-2 text-sm">Scroll Down</span>
-              <div className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center">
-                <ArrowDown size={16} />
-              </div>
-            </a>
-          </div>
-        </div>
+               <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full backdrop-blur-md">
+                 <Terminal size={14} className="text-ml-primary animate-pulse" />
+                 <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">System Online</span>
+               </div>
+               
+               <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
+                  Architecting <br/>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
+                     The Future
+                  </span>
+               </h1>
+               
+               <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
+                  I am <span className="text-foreground font-semibold">Hasibul Islam Nirjhar</span>. 
+                  A Full Stack Engineer weaving code into intelligence.
+               </p>
+
+               <div className="flex flex-wrap gap-4 pt-4">
+                  <a href="#projects" className="px-8 py-4 bg-foreground text-background rounded-lg font-bold hover:scale-105 transition-transform flex items-center gap-2 shadow-lg shadow-indigo-500/20">
+                     <Rocket size={20} />
+                     <span>Projects</span>
+                  </a>
+                  <a href="#contact" className="px-8 py-4 bg-white/5 border border-white/10 backdrop-blur-md text-foreground rounded-lg font-medium hover:bg-white/10 transition-colors flex items-center gap-2">
+                     <Mail size={20} />
+                     <span>Contact</span>
+                  </a>
+               </div>
+               
+               <div className="flex items-center gap-6 pt-8 text-muted-foreground">
+                  <a href="https://github.com/HasibNirjhar07" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors"><Github /></a>
+                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors"><Linkedin /></a>
+                  <div className="h-px w-10 bg-border"></div>
+                  <a href="/resume.pdf" download className="flex items-center gap-2 hover:text-foreground transition-colors text-sm uppercase font-bold tracking-wider group">
+                     <Download size={16} className="group-hover:translate-y-1 transition-transform" /> Resume
+                  </a>
+               </div>
+            </motion.div>
+            
+            {/* Empty Right Column for 3D visibility */}
+            <div className="hidden lg:block"></div>
+         </div>
       </div>
 
-
+      {/* Scroll Hint */}
+      <motion.div 
+         initial={{ opacity: 0 }}
+         animate={{ opacity: 1 }}
+         transition={{ delay: 1, duration: 1 }}
+         className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-muted-foreground/50"
+      >
+         <div className="w-[1px] h-12 bg-gradient-to-b from-transparent via-muted-foreground/50 to-transparent"></div>
+         <span className="text-[10px] uppercase tracking-[0.3em] opacity-80">Scroll to Explore</span>
+      </motion.div>
     </section>
   );
 };

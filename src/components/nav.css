@@ -1,0 +1,341 @@
+/* =========================================================================
+   Navbar — floating glass header around StaggeredMenu
+   Selectors are prefixed with .sm-scope where they must beat the
+   component's own inline <style> block.
+   ========================================================================= */
+
+.nv {
+  --nv-ink: #eeecf7;
+  --nv-muted: #a29dbb;
+  --nv-glass: rgba(18, 15, 30, 0.55);
+  --nv-glass-strong: rgba(18, 15, 30, 0.78);
+  --nv-line: rgba(255, 255, 255, 0.1);
+  --nv-accent: #9b87f5;
+  --nv-accent-2: #38e1ff;
+  --nv-panel: #0d0b15;
+  --nv-mark-bg: #14111f;
+  --nv-ease: cubic-bezier(0.19, 1, 0.22, 1);
+}
+.light .nv {
+  --nv-ink: #14111d;
+  --nv-muted: #6b6578;
+  --nv-glass: rgba(255, 253, 248, 0.6);
+  --nv-glass-strong: rgba(255, 253, 248, 0.85);
+  --nv-line: rgba(20, 17, 29, 0.1);
+  --nv-accent: #6a4cf5;
+  --nv-accent-2: #0891b2;
+  --nv-panel: #f6f3ec;
+  --nv-mark-bg: #ffffff;
+}
+
+/* ---------- header shell ---------- */
+.sm-scope .nv-menu .staggered-menu-header.nv-header {
+  padding: 1.1rem clamp(16px, 2.4vw, 36px);
+  background: transparent !important;
+  box-shadow: none !important;
+  transition: transform 0.7s var(--nv-ease), padding 0.5s var(--nv-ease);
+}
+.nv-scrolled .sm-scope .nv-menu .staggered-menu-header.nv-header {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.nv-hidden .sm-scope .nv-menu .staggered-menu-header.nv-header {
+  transform: translateY(-130%);
+}
+
+.nv-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* glass chip shared by logo, quick links and menu button */
+.nv-logo,
+.nv-links,
+.sm-scope .nv-menu .sm-toggle {
+  background: var(--nv-glass);
+  border: 1px solid var(--nv-line);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  box-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ---------- logo ---------- */
+.nv-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.3rem 1rem 0.3rem 0.3rem;
+  border-radius: 16px;
+  color: var(--nv-ink);
+  text-decoration: none;
+  transition: border-color 0.4s, transform 0.5s var(--nv-ease);
+}
+.nv-logo:hover {
+  border-color: color-mix(in srgb, var(--nv-accent) 55%, transparent);
+}
+.nv-mark {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  transition: transform 0.7s var(--nv-ease);
+}
+.nv-mark-bg {
+  fill: var(--nv-mark-bg);
+}
+.nv-mark-n {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.nv-mark-dot {
+  fill: var(--nv-accent-2);
+  filter: drop-shadow(0 0 4px var(--nv-accent-2));
+  transform-origin: 27px 12px;
+  animation: nv-dot 2.4s ease-in-out infinite;
+}
+@keyframes nv-dot {
+  50% {
+    transform: scale(0.6);
+    opacity: 0.6;
+  }
+}
+.nv-logo:hover .nv-mark {
+  transform: rotate(-8deg) scale(1.04);
+}
+.nv-logo:hover .nv-mark-n {
+  animation: nv-draw 0.9s var(--nv-ease);
+}
+@keyframes nv-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.nv-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.05rem;
+  line-height: 1;
+}
+.nv-letters {
+  display: inline-flex;
+  font-family: "Syne", "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 1.12rem;
+  letter-spacing: -0.02em;
+}
+.nv-letter {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  height: 1.32em;
+  overflow: hidden;
+}
+.nv-letter span {
+  display: block;
+  line-height: 1.32em;
+  transition: transform 0.6s var(--nv-ease);
+  transition-delay: calc(var(--i) * 28ms);
+}
+.nv-letter span:last-child {
+  color: var(--nv-accent);
+}
+.nv-logo:hover .nv-letter span {
+  transform: translateY(-100%);
+}
+.nv-tld {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--nv-accent);
+  margin-left: 0;
+  transition: color 0.4s;
+}
+.nv-logo:hover .nv-tld {
+  color: var(--nv-accent-2);
+}
+
+/* ---------- quick links pill ---------- */
+.nv-links {
+  position: fixed;
+  top: 1.1rem;
+  left: 50%;
+  z-index: 41;
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  transition: transform 0.7s var(--nv-ease), opacity 0.4s, top 0.5s var(--nv-ease);
+}
+.nv-scrolled .nv-links {
+  top: 0.75rem;
+  background: var(--nv-glass-strong);
+}
+.nv-hidden .nv-links {
+  transform: translate(-50%, -160%);
+}
+.nv-open .nv-links {
+  opacity: 0;
+  pointer-events: none;
+}
+.nv-links a {
+  position: relative;
+  z-index: 1;
+  padding: 0.62rem 1.05rem;
+  border-radius: 999px;
+  font-family: "Inter", sans-serif;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--nv-muted);
+  text-decoration: none;
+  transition: color 0.35s;
+}
+.nv-links a.is-on,
+.nv-links a:hover {
+  color: var(--nv-ink);
+}
+.nv-links a[aria-current="true"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0.28rem;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--nv-accent-2);
+  box-shadow: 0 0 6px var(--nv-accent-2);
+}
+.nv-indicator {
+  position: absolute;
+  top: 0.3rem;
+  bottom: 0.3rem;
+  left: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--nv-accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--nv-accent) 30%, transparent);
+  transition: transform 0.55s var(--nv-ease), width 0.55s var(--nv-ease), opacity 0.3s;
+}
+.nv-sep {
+  width: 1px;
+  height: 20px;
+  margin: 0 0.35rem;
+  background: var(--nv-line);
+}
+
+/* theme toggle sits flush inside the pill */
+.nv-theme > button {
+  padding: 0.5rem !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+.nv-theme > button:hover {
+  background: color-mix(in srgb, var(--nv-accent) 14%, transparent) !important;
+}
+.nv-theme-mobile {
+  display: none;
+}
+
+/* ---------- menu button ---------- */
+.sm-scope .nv-menu .sm-toggle {
+  gap: 0.75rem;
+  padding: 0.5rem 0.55rem 0.5rem 1.15rem;
+  border-radius: 999px;
+  font-family: "Syne", "Inter", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: border-color 0.4s, background-color 0.4s;
+}
+.sm-scope .nv-menu .sm-toggle:hover {
+  border-color: color-mix(in srgb, var(--nv-accent) 55%, transparent);
+}
+.sm-scope .nv-menu .sm-toggle-textWrap {
+  margin-right: 0;
+}
+.sm-scope .nv-menu .sm-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: 50%;
+  background: var(--nv-accent);
+  transition: transform 0.6s var(--nv-ease), background-color 0.4s;
+}
+.sm-scope .nv-menu .sm-toggle:hover .sm-icon {
+  transform: scale(1.08);
+  background: var(--nv-accent-2);
+}
+.sm-scope .nv-menu .sm-icon-line {
+  width: 12px;
+  height: 1.8px;
+  background: #fff !important;
+}
+
+/* ---------- slide-out panel ---------- */
+.sm-scope .nv-menu .staggered-menu-panel {
+  background: var(--nv-panel) !important;
+  border-left: 1px solid var(--nv-line);
+}
+.sm-scope .nv-menu .sm-panel-item {
+  color: var(--nv-ink) !important;
+  font-family: "Syne", "Inter", sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.9rem, 2.2vw, 2.2rem) !important;
+  padding-right: 1.1em !important;
+  letter-spacing: -0.03em;
+}
+.sm-scope .nv-menu .sm-panel-list[data-numbering] .sm-panel-item::after {
+  right: 0 !important;
+  top: 0.2em !important;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px !important;
+}
+.sm-scope .nv-menu .sm-panel-item:hover {
+  color: var(--nv-accent) !important;
+}
+.sm-scope .nv-menu .sm-socials-title {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.sm-scope .nv-menu .sm-socials-link {
+  color: var(--nv-ink) !important;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1024px) {
+  .nv-links {
+    display: none;
+  }
+  .nv-theme-mobile {
+    display: block;
+  }
+  .nv-theme-mobile > button {
+    background: var(--nv-glass) !important;
+    border: 1px solid var(--nv-line) !important;
+    backdrop-filter: blur(16px);
+  }
+}
+@media (max-width: 480px) {
+  .nv-tld {
+    display: none;
+  }
+  .sm-scope .nv-menu .sm-toggle-textWrap {
+    display: none;
+  }
+  .sm-scope .nv-menu .sm-toggle {
+    padding: 0.4rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nv-mark-dot {
+    animation: none;
+  }
+}
